@@ -10,10 +10,9 @@ export const Heading = () => {
     const { user, loading } = useAuth();
 
     return (
-        <div className="max-w-3xl space-y-4 text-center">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl, font-bold"> 
-                Welcome to your 
-                <span className="underline"> Bookshelf </span>        
+        <div className="max-w-3xl space-y-4 text-center font-extrabold">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl "> 
+                Welcome to your Bookshelf    
             </h1>
             <h3 className="text-base sm:text-xl md:text-2xl font-medium ">
             A place to find your next read and chat all things fantasy books
@@ -26,6 +25,7 @@ export const Heading = () => {
                     Enter Bookshelf
                 </Link>
             </Button>
+        
         ) : (
             <Button onClick={signInWithGoogle}>
                 Join BookShelf Free
