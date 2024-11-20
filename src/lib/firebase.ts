@@ -23,6 +23,8 @@ const firebaseConfig = {
   export let analytics: ReturnType<typeof getAnalytics> | null = null;
   if( typeof window !== 'undefined'){
     isSupported().then((supported) => {
-        if (supported) analytics = getAnalytics(app)
+        if (supported) {
+            analytics = getAnalytics(app)
+        }
     });
   };
