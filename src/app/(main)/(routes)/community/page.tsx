@@ -1,8 +1,12 @@
+import { ProtectedRoute } from "../../_components/auth/protected-route";
+
 const CommunityPage = () => {
     return (
-        <div>
-            COMMUNITY
-        </div>
+        <ProtectedRoute>
+            <div>
+                COMMUNITY
+            </div>
+        </ProtectedRoute>
     )
 }
 

@@ -21,7 +21,7 @@ export const Heading = () => {
             <Spinner /> 
         ) : user ? (
             <Button asChild>
-                <Link href="/bookshelf">
+                <Link href="/dashboard">
                     Enter Bookshelf
                 </Link>
             </Button>
