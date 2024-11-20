@@ -1,8 +1,12 @@
+import { ProtectedRoute } from "../../_components/auth/protected-route";
+
 const BrowsePage = () => {
     return (
-        <div>
-            BROWSE
-        </div>
+        <ProtectedRoute>
+            <div>                
+                BROWSE
+            </div>
+        </ProtectedRoute>
     )
 }
 
