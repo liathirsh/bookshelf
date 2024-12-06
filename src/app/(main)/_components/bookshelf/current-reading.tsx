@@ -60,7 +60,7 @@ const CurrentReading: React.FC = () => {
 
     return (
         <div>
-            <h2> Currently Reading </h2>
+            <h1> Currently Reading </h1>
             { currentlyReading.length > 0 ? (
                 <ul>
                     {currentlyReading.map((book) => {

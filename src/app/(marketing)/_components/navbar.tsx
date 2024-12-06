@@ -4,13 +4,14 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Spinner } from "@/components/ui/spinner"
-import { useAuth, signInWithGoogle, logout } from "@/hooks/useAuth";
+import { logout } from "@/hooks/useAuth";
+import { useAuthContext } from "@/context/auth-context"
 import { UserProfileModal } from "./user-profile-modal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
 export const Navbar = () => {
-    const { user, loading } = useAuth();
+    const { user, loading } = useAuthContext();
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     const handleAvatarClick = () => setIsModalOpen(true);
@@ -28,7 +29,7 @@ export const Navbar = () => {
                 ) : user ? (
                     <>
                     <Button asChild variant="default">
-                        <Link href="/bookshelf"> Enter Bookshelf </Link>
+                        <Link href="/dashboard"> Enter Bookshelf </Link>
                     </Button>
                     <Button variant="default" onClick={logout}> Log Out </Button>
                     <div className="ml-auto cursor-pointer" onClick={handleAvatarClick}>
@@ -45,8 +46,8 @@ export const Navbar = () => {
                     </>
                 ) : (
                     <>
-                    <Button variant="default" onClick={signInWithGoogle}>
-                        Log in with Google
+                    <Button asChild variant="default">
+                        <Link href="/login"> Enter Bookshelf </Link>
                     </Button>
                     <Button variant="default" asChild>
                         <Link href="/sign-up"> Join Bookshelf</Link>
