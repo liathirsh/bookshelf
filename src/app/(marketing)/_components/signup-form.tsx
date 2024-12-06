@@ -10,7 +10,6 @@ import { signUpSchema, SignUpFormValues } from "@/schemas/auth";
 import { auth, db } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { ForgotPasswordDialog } from "./forgotPasswordDialog";
 
 export function SignUpForm() {
     const { toast } = useToast();
@@ -107,10 +106,7 @@ export function SignUpForm() {
                             </p>
                         </FormItem>
                     )}
-                />
-                <div className="text-sm text-center">
-                    <ForgotPasswordDialog />
-                </div>
+                />               
                 <div className="flex justify-center">
                     <Button type="submit" disabled={!isFormValid || form.formState.isSubmitting}>
                         {form.formState.isSubmitting ? "Creating Account..." : "Sign Up"}
