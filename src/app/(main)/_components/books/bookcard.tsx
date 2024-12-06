@@ -16,6 +16,7 @@ const BookCard = ( { book }: BookCardProps) => {
                     width={200}
                     height={200}
                     alt={book.description}
+                    priority
                 />
             </div>
             <div className="flex flex-col justify-center">
