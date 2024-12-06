@@ -1,13 +1,15 @@
 "use client"
 
-import { useAuth, signInWithGoogle } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Heading = () => {
     const { user, loading } = useAuth();
+    const router = useRouter();
 
     return (
         <div className="max-w-3xl space-y-4 text-center font-extrabold">
@@ -27,7 +29,7 @@ export const Heading = () => {
             </Button>
         
         ) : (
-            <Button onClick={signInWithGoogle}>
+            <Button onClick={()=> router.push('/sign-up')}>
                 Join BookShelf Free
                 <ArrowRight className="h-4 w-4 ml-2" />
             </Button>

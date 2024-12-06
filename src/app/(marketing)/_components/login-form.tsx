@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { loginSchema } from "@/schemas/loginSchema";
+import { ForgotPasswordDialog } from "./forgotPasswordDialog";
+
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -68,6 +70,9 @@ export function LogInForm() {
                         </FormItem>
                     )}
                 />
+                 <div className="text-sm text-center mt-4 mb-4">
+                    <ForgotPasswordDialog />
+                </div>
                 <Button type="submit" className="w-full" disabled={!isFormValid}>
                     {form.formState.isSubmitting ? "Logging In..." : "Log In"}
                 </Button>
