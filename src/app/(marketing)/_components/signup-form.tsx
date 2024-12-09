@@ -44,9 +44,9 @@ export function SignUpForm() {
                 displayName: data.displayName,
                 createdAt: new Date(),
             });
-            toast({ title: "Account created successfully!" });
+            toast({ title: "Account created successfully! :)" });
         } catch (error) {
-            toast({ title: "Error creating account" })
+            toast({ title: "Error creating account :(" })
         }
     }
 

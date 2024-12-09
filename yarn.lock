@@ -2331,7 +2331,7 @@ __metadata:
     clsx: ^2.1.1
     eslint: ^8
     eslint-config-next: 15.0.3
-    firebase: ^11.0.1
+    firebase: 11.0.2
     lucide-react: ^0.454.0
     next: 15.0.3
     postcss: ^8
@@ -3491,7 +3491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase@npm:^11.0.1":
+"firebase@npm:11.0.2":
   version: 11.0.2
   resolution: "firebase@npm:11.0.2"
   dependencies:

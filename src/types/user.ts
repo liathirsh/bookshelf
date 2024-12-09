@@ -1,13 +1,17 @@
-export interface User {
-    uid: string;
-    email: string | null;
-    displayName: string | null;
-    photoURL: string | null;
+import { Timestamp } from "firebase/firestore";
+
+export type UserProfile = {
+    displayName: string;
+    photoURL?: string;
+    createdAt: Timestamp;
+    bio?: string;
+    favoriteGenres?: string[];
 }
 
-export interface UserState {
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    setUser: (user: User | null) => void;
+export type UserShelfEntry = {
+    bookId: string;
+    status: "want-to-read" | "currently-reading" | "read";
+    addedAt: number;
+    lastReadAt?: number;
+    readingProgress?: number;
 }

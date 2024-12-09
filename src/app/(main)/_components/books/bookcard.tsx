@@ -12,7 +12,7 @@ const BookCard = ( { book }: BookCardProps) => {
         <div className="flex gap-4 p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow">
             <div className="flex-shrink-0">
                 <Image
-                    src={book.coverImageURL}
+                    src={book.coverImage}
                     width={200}
                     height={200}
                     alt={book.description}
