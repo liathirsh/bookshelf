@@ -32,6 +32,7 @@ export function LogInForm() {
             toast({title: "Login Successful", description: "Welcome back!"})
         } catch (error) {
             toast({ title: "Login Failed", description: "Invalid email or password"})
+            console.error(error)
         }
     }
 

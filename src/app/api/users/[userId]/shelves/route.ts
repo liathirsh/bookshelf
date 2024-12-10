@@ -1,11 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
 import { getDocs, query } from "firebase/firestore";
 import { userShelvesCollection } from "@/lib/firestore/collections";
 
-export async function GET(req: NextRequest, {params }: {params: { userId: string } }) {
-    const q = query(userShelvesCollection(params.userId));
-    const snapshot = await getDocs(q);
-    const shelves = snapshot.docs.map(doc => doc.data());
-    return NextResponse.json(shelves);
+interface Shelf {
+  title: string;
+  books: string[];
+}
 
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ userId: string }> }
+): Promise<Response> {
+  const { userId } = await params;
+
+  if (!userId) {
+    return new Response(JSON.stringify({ error: "User ID is required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    const q = query(userShelvesCollection(userId));
+    const snapshot = await getDocs(q);
+
+    const shelves: Shelf[] = snapshot.docs.map((doc) => doc.data() as Shelf);
+
+    return new Response(JSON.stringify(shelves), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Error fetching shelves:", error);
+    return new Response(JSON.stringify({ error: "Failed to fetch shelves" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }

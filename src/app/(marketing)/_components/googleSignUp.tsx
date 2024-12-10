@@ -18,6 +18,7 @@ export function GoogleSignUpButton() {
             router.push("/dashboard");
         } catch (error) {
             toast({ title: "Sign In Failed" })
+            console.error(error)
         }
     }
 

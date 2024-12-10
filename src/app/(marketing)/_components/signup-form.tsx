@@ -47,6 +47,8 @@ export function SignUpForm() {
             toast({ title: "Account created successfully! :)" });
         } catch (error) {
             toast({ title: "Error creating account :(" })
+            console.error(error)
+
         }
     }
 

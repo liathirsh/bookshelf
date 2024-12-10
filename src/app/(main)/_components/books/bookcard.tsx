@@ -15,7 +15,7 @@ const BookCard = ( { book }: BookCardProps) => {
                     src={book.coverImage}
                     width={200}
                     height={200}
-                    alt={book.description}
+                    alt={book.description ?? "No description yet!"}
                     priority
                 />
             </div>
