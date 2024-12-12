@@ -1,83 +1,90 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel} from "@/components/ui/form";
+import { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { loginSchema } from "@/schemas/loginSchema";
+import { loginAction } from "@/app/actions/login-actions";
 import { ForgotPasswordDialog } from "./forgotPasswordDialog";
+import { LoginResult } from "@/types/loginResult";
+import { useRouter } from "next/navigation";
 
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+const initialState: LoginResult = {
+    success: false,
+    fieldErrors: {},
+    generalError: "",
+}
 
 export function LogInForm() {
-    const { toast } = useToast();
-
-    const form = useForm<LoginFormValues>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        },
-    });
-
-    async function onSubmit(data:LoginFormValues) {
-        try {
-            await signInWithEmailAndPassword(auth, data.email, data.password);
-            toast({title: "Login Successful", description: "Welcome back!"})
-        } catch (error) {
-            toast({ title: "Login Failed", description: "Invalid email or password"})
-            console.error(error)
-        }
+    
+    const loginActionHandler = async (_prevState: LoginResult, formData: FormData) => {
+        return await loginAction(formData);
     }
 
-    const isFormValid = form.formState.isValid && !form.formState.isSubmitting;
+    const [state, formAction] = useActionState(loginActionHandler, initialState);
+    
+    const router = useRouter();
+
+    useEffect(() => {
+        if (state.success) {
+            router.push("/dashboard");
+        }
+    }, [state.success, router]);
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-                <FormField
-                    control={form.control}
+        <form action={formAction} className="space-y-4">
+            <div>
+                <label htmlFor="email" className="block text-sm font-medium">
+                    Email
+                </label>
+                <Input
+                    id="email"
                     name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Enter your email" {...field} />
-                            </FormControl>
-                            <p className="text-sm text-red-500 mt-1">
-                                {form.formState.errors.email?.message}
-                            </p>
-                        </FormItem>
-                    )}
+                    type="email"
+                    placeholder="Enter your email"
+                    required
                 />
-                <FormField
-                    control={form.control}
+                {state.fieldErrors?.email && (
+                    <p className="text-sm text-red-500 mt-1">
+                        {state.fieldErrors.email}
+                    </p>
+                )}
+            </div>
+            <div>
+                <label htmlFor="password" className="block text-sm font-medium">
+                    Password
+                </label>
+                <Input
+                    id="password"
                     name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                                <Input type="password" placeholder="Enter your password" {...field} />
-                            </FormControl>
-                            <p className="text-sm text-red-500 mt-1">
-                                {form.formState.errors.password?.message}
-                            </p>
-                        </FormItem>
-                    )}
+                    type="password"
+                    placeholder="Enter your password"
+                    required
                 />
-                 <div className="text-sm text-center mt-4 mb-4">
-                    <ForgotPasswordDialog />
-                </div>
-                <Button type="submit" className="w-full" disabled={!isFormValid}>
-                    {form.formState.isSubmitting ? "Logging In..." : "Log In"}
-                </Button>
-            </form>
-        </Form>
+                {state.fieldErrors?.password && (
+                    <p className="text-sm text-red-500 mt-1">
+                        {state.fieldErrors.password}
+                    </p>
+                )}
+            </div>
+           
+            {state.generalError && (
+                <p className="text-sm text-red-500 text-center mt-2">
+                    {state.generalError}
+                </p>
+            )}
+
+            {state.success && (
+                <p className="text-sm text-green-500 text-center mt-2">
+                    Welcome back! Login successful.
+                </p>
+            )}
+
+                <div className="text-sm text-center mt-4 mb-4">
+                <ForgotPasswordDialog />
+            </div>
+            <Button type="submit" className="w-full" disabled={state.success}>
+                {state.success ? "Logged In!" : "Logging In..."}
+            </Button>
+        </form>
     )
 }

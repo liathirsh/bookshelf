@@ -1,120 +1,94 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast"
-import { signUpSchema, SignUpFormValues } from "@/schemas/auth";
-import { auth, db } from "@/lib/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { signUpAction } from "@/app/actions/sign-up-action";
+import { SignUpResult } from "@/types/signupResult";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
+
+const initialState: SignUpResult = {
+    success: false,
+    fieldErrors: {},
+    generalError: "",
+}
 
 export function SignUpForm() {
-    const { toast } = useToast();
+    const router = useRouter();
 
-    const form = useForm<SignUpFormValues>({
-        resolver: zodResolver(signUpSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-            displayName: "",
-        },
-    });
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const password = form.watch("password");
-    const displayName = form.watch("displayName");
-    const email = form.watch("email");
-
-    const isFormValid = 
-        displayName && displayName.length >= 5 &&
-        email && emailRegex.test(email) && 
-        password && password.length >=6;
-
-    async function onSubmit(data: SignUpFormValues) {
-        try {
-            const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password);
-            await updateProfile(user, { displayName: data.displayName });
-
-            await setDoc(doc(db, "users", user.uid), {
-                email: data.email,
-                displayName: data.displayName,
-                createdAt: new Date(),
-            });
-            toast({ title: "Account created successfully! :)" });
-        } catch (error) {
-            toast({ title: "Error creating account :(" })
-            console.error(error)
-
-        }
+    const signUpActionHandler = async(prevState: SignUpResult, formData: FormData): Promise<SignUpResult> => {
+        const result = await signUpAction(formData);
+        return result;
     }
 
+    const [state, formAction] = useActionState(signUpActionHandler, initialState);
+
+    useEffect(() => {
+        if (state.success) {
+            router.push("/dashboard");
+        }
+    }, [state.success, router]);
+
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                    control={form.control}
-                    name="displayName"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Username" {...field} />
-                            </FormControl>
-                            <p className="text-sm text-red-500 mt-1">
-                                { displayName && displayName.length < 6
-                                    ? "Username must be at least 5 characters."
-                                    : ""
-                                }
-                            </p>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Email" {...field} />
-                            </FormControl>
-                            <p className="text-sm text-red-500 mt-1">
-                                { email && !emailRegex.test(email)
-                                    ? "Please enter a valid email address"
-                                    : ""
-                                }
-                            </p>
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                                <Input type="password" placeholder="Your password" {...field} />
-                            </FormControl>
-                            <p className="text-sm text-red-500 mt-1">
-                                { password && password.length < 6
-                                    ? "Password must be at least 6 characters."
-                                    : ""
-                                }
-                            </p>
-                        </FormItem>
-                    )}
-                />               
-                <div className="flex justify-center">
-                    <Button type="submit" disabled={!isFormValid || form.formState.isSubmitting}>
-                        {form.formState.isSubmitting ? "Creating Account..." : "Sign Up"}
-                    </Button>
-                </div>
-            </form>
-        </Form>
+       <form action={formAction} className="space-y-4">
+        <div>
+            <label htmlFor="displayName" className="block text-sm font-medium">
+                Username
+            </label>
+            <Input
+                id="displayName"
+                name="displayName"
+                placeholder="Enter your username"
+                required
+                minLength={5}
+            />
+            {state.fieldErrors?.displayName && (
+                <p className="text-sm text-red-500 mt-1">{state.fieldErrors.displayName}</p>                
+            )}
+        </div>
+        <div>
+            <label htmlFor="email" className="block text-sm font-medium">
+                Email
+            </label>
+            <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                required
+            />
+            {state.fieldErrors?.email && (
+                <p className="text-sm text-red-500 mt-1">{state.fieldErrors.email}</p>
+            )}
+        </div>
+        <div> 
+            <label htmlFor="password" className="block text-sm font-medium">
+                Password
+            </label>
+            <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+                minLength={6}
+            />
+            {state.fieldErrors?.password && (
+                <p className="text-sm text-red-500 mt-1">{state.fieldErrors.password}</p>
+            )}
+        </div>
+        {state.generalError && (
+            <p className="text-sm text-red-500 text-center mt-2">{state.generalError}</p>
+        )}
+        {state.success && (
+            <p className="text-sm text-green-500 text-center mt-2">
+                Account created successfully. Welcome to Bookshelf! 
+            </p>
+        )}
+        <Button type="submit" className="w-full" disabled={state.success}>
+            {state.success ? <Spinner /> : "Sign Up"}
+        </Button>
+       </form>
     );
 };
