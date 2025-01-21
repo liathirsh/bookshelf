@@ -1,6 +1,7 @@
 import { auth, db } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { initializeUserShelves } from "@/lib/firestore/users";
 import { signUpSchema } from "@/schemas/signUpSchema";
 import { SignUpResult } from "@/types/signupResult";
 
@@ -34,6 +35,9 @@ export async function signUpAction(formData: FormData): Promise<SignUpResult> {
             displayName,
             createdAt: new Date(),
         })
+
+        await initializeUserShelves(user.uid);
+
         return { success: true };
     } catch (error ) {
         console.error("Sign Up Error:", error)

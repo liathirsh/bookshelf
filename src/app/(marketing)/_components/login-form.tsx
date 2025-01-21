@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { loginAction } from "@/app/actions/login-actions";
@@ -15,20 +15,14 @@ const initialState: LoginResult = {
 }
 
 export function LogInForm() {
-    
-    const loginActionHandler = async (_prevState: LoginResult, formData: FormData) => {
-        return await loginAction(formData);
-    }
+    const [state, formAction] = useActionState(loginAction, initialState);
 
-    const [state, formAction] = useActionState(loginActionHandler, initialState);
-    
     const router = useRouter();
 
-    useEffect(() => {
-        if (state.success) {
-            router.push("/dashboard");
-        }
-    }, [state.success, router]);
+    
+    if (state.success) {
+        router.push("/dashboard");
+    }
 
     return (
         <form action={formAction} className="space-y-4">

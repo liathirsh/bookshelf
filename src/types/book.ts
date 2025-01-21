@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 
 export interface Book {
     id: string;
@@ -8,7 +7,13 @@ export interface Book {
     thumbnail?: string;
     genre: string[];
     coverImage: string;
-    averateRating?: number;
+    averageRating?: number;
     ratingsCount?: number;
-    createdAt: Timestamp;
+    createdAt: Date;
+}
+
+export interface UserBook {
+    bookId: string;
+    status: string;
+    lastUpdated: string;
 }

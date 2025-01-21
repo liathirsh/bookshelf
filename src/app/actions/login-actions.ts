@@ -1,10 +1,10 @@
+"use server";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { loginSchema } from "@/schemas/loginSchema";
 import { LoginResult } from "@/types/loginResult";
 
-export const loginAction = async(formData: FormData):Promise<LoginResult> => {
+export const loginAction = async(_prevState: LoginResult, formData: FormData):Promise<LoginResult> => {
     const email = formData.get("email");
     const password = formData.get("password");
     
@@ -21,11 +21,23 @@ export const loginAction = async(formData: FormData):Promise<LoginResult> => {
         };
     }
 
-    try { 
-        await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        const auth = getAuth();
+        const userCredential = await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        
+        const idToken = await userCredential.user.getIdToken();
+
+        const response = await fetch('/api/auth/set-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ idToken }),
+        })
+
+        if(!response.ok) {
+            return {
+                success: false,
+                generalError: "Failed to set session cookie. Please try again later.",
+            }
+        }
         return { success: true };
-    } catch (error) {
-        console.error(error)
-        return { success: false, generalError: "Invalid password or email" }
-    }
+  
 }

@@ -1,14 +1,12 @@
-import { ProtectedRoute } from "../../_components/auth/protected-route";
-import Bookshelf from "../../_components/bookshelf/bookshelf";
+import CurrentReadingWrapper from "../../_components/bookshelf/CurrentReadingWrapper";
 
 const BooksPage = () => {
     return (
-        <ProtectedRoute>
             <div>
-                <Bookshelf />
+                <CurrentReadingWrapper />
             </div>
-        </ProtectedRoute>
     )
-}
+};
+
 
 export default BooksPage;

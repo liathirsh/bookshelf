@@ -2,7 +2,7 @@
 const BookshelfPreview = () => {
     return (
         <div>
-            BookshelfPreview
+            Bookshelf Preview
         </div>
     )
 }

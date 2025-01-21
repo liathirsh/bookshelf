@@ -3,19 +3,19 @@ import { collection, doc } from "firebase/firestore";
 
 export const usersCollection = collection(db, "users");
 
-export const userDoc = (userId: string) => doc(usersCollection, userId);
+export const userDoc = (userId: string) => doc(db, `users/${userId}`);
 
 export const userShelvesCollection = (userId: string) => 
-    collection(userDoc(userId), "shelves");
+    collection(db, `users/${userId}/shelves`);
 
 export const userReviewsCollection = (userId: string) => 
-    collection(userDoc(userId), "reviews");
+    collection(db, `users/${userId}/reviews`);
 
 export const booksCollection = collection(db, "books");
 
 export const postsCollection = collection(db, "posts");
 
 export const postCommentsCollection = (postId: string) =>
-    collection(doc(postsCollection, postId), "comments");
+    collection(db, `posts/${postId}/comments`);
 
 export const reviewsCollection = collection(db, "reviews");

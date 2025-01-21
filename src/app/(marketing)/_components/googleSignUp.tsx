@@ -14,10 +14,27 @@ export function GoogleSignUpButton() {
 
     async function handleGoogleSignUp() {
         try {
-            await signInWithPopup(auth, googleAuthProvider);
+            const result = await signInWithPopup(auth, googleAuthProvider);
+            
+            const idToken = await result.user.getIdToken();
+
+            const response = await fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idToken }),
+            })
+
+            if(!response.ok){
+                throw new Error("Failed to set session cookie");
+            }
+
             router.push("/dashboard");
         } catch (error) {
-            toast({ title: "Sign In Failed" })
+            toast({ 
+                title: "Sign In Failed" ,
+                description: "Please try again",
+                variant: "destructive"
+            })
             console.error(error)
         }
     }
