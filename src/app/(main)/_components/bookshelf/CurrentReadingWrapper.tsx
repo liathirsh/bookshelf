@@ -44,6 +44,7 @@ async function fetchCurrentlyReading(sessionCookie: string): Promise<FetchResult
     const userId = decodedToken.uid;
 
     const shelvesRef = userShelvesCollection(userId);
+    
     const q = query(shelvesRef, where("status", "==", "currentlyReading"));
         const querySnapshot = await getDocs(q).catch((error) => {
         console.error("Firestore query failed:", error.message);
@@ -55,7 +56,7 @@ async function fetchCurrentlyReading(sessionCookie: string): Promise<FetchResult
     }
 
     if (querySnapshot.empty) {
-        return { success: false, errorMessage: "No books are currently being read"}
+        return { success: true, currentlyReading: [] }
     }
 
     const currentlyReadingDetails = await Promise.all(

@@ -21,7 +21,7 @@ export const MainNavbar = () => {
     return (
         <div>
             <Button asChild variant="default">
-                <Link href="/"> Home </Link>
+                <Link href="/dashboard"> Home </Link>
             </Button>
             {user && (
             <>
