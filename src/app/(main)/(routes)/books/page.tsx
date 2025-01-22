@@ -1,9 +1,9 @@
-import CurrentReadingWrapper from "../../_components/bookshelf/CurrentReadingWrapper";
+import Bookshelf from "../../_components/bookshelf/bookshelf";
 
 const BooksPage = () => {
     return (
             <div>
-                <CurrentReadingWrapper />
+                <Bookshelf />
             </div>
     )
 };
