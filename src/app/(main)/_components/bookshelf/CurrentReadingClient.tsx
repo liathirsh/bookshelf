@@ -3,6 +3,7 @@
 import BookCard from '../books/bookcard';
 import { UserBook } from '@/types/book';
 import { Book } from '@/types/book';
+import { AddBook } from '../books/addBook';
 
 interface CurrentReadingClientProps {
     currentlyReading: (UserBook & { bookDetails: Book | null})[];
@@ -29,6 +30,7 @@ export default function CurrentReadingClient({ currentlyReading = []}: CurrentRe
                ))}
             </ul>
             )}
+            <AddBook status="currentlyReading" />
         </div>
     );
 }

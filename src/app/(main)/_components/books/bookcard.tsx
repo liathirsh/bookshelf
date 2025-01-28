@@ -6,15 +6,17 @@ interface BookCardProps {
     book: Book;
 }
 
+const placeholderImage = "/romantasylogo.png"
+
 const BookCard = ( { book }: BookCardProps) => {
 
     return (
         <div className="flex gap-4 p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow">
             <div className="flex-shrink-0">
                 <Image
-                    src={book.coverImage}
-                    width={200}
-                    height={200}
+                    src={book.imageUrl || placeholderImage } 
+                    width={100}
+                    height={100}
                     alt={book.description ?? "No description yet!"}
                     priority
                 />

@@ -1,5 +1,5 @@
 import CurrentReadingWrapper from "./CurrentReadingWrapper";
-import ReadBooks from "./read-books";
+import ReadBooks from "./ReadBooksClient";
 import WantToRead from "./want-to-read";
 
 

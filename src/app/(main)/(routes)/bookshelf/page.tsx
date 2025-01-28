@@ -1,5 +1,3 @@
-"use client";
-
 import Bookshelf from "../../_components/bookshelf/bookshelf";
 
 const BookshelfRoute = () => {

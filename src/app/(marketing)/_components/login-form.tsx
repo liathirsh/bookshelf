@@ -77,7 +77,7 @@ export function LogInForm() {
                 <ForgotPasswordDialog />
             </div>
             <Button type="submit" className="w-full" disabled={state.success}>
-                {state.success ? "Logged In!" : "Logging In..."}
+                {state.success ? "Logged In!" : "Log In"}
             </Button>
         </form>
     )

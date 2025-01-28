@@ -1,3 +1,5 @@
+"use server"
+
 import { auth } from "@/lib/firebaseAdmin";
 import { userShelvesCollection } from "@/lib/firestore/collections";
 import { getDocs, query, where } from "firebase/firestore";
