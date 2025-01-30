@@ -1,7 +1,6 @@
-import CurrentReadingWrapper from "./CurrentReadingWrapper";
-import ReadBooks from "./ReadBooksClient";
-import WantToRead from "./want-to-read";
+"use client";
 
+import Shelf from "./shelf";
 
 const Bookshelf = () => {
     return (
@@ -11,15 +10,15 @@ const Bookshelf = () => {
             </h1>
             <div className="space-y-10">
                 <section className="p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-                    <WantToRead />
+                    <Shelf status="currentlyReading" heading="Currently Reading" />
                 </section>
 
                 <section className="p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-                    <CurrentReadingWrapper />
+                    <Shelf status="wantToRead" heading="Want To Read" />
                 </section>
 
                 <section className="p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-                    <ReadBooks />
+                    <Shelf status="read" heading="Read" />
                 </section>
             </div>
         </div>

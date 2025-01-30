@@ -2,7 +2,8 @@
 const BrowsePage = () => {
     return (
             <div>                
-                BROWSE
+                <h1> Browse </h1>
+                <p> Find your next read here! </p>
             </div>
     )
 }

@@ -34,9 +34,6 @@ export const MainNavbar = () => {
                 <Button asChild variant="default">
                     <Link href="/community"> Community </Link>
                 </Button>
-                <Button asChild variant="default">
-                    <Link href="/community"> Community </Link>
-                </Button>
                 <Button variant="default" onClick={handleLogout}> Log Out </Button>
             </>
             )}

@@ -39,7 +39,10 @@ export const getBook = async (bookId: string): Promise<Book | null> => {
         const bookDocRef = doc(booksCollection, bookId);
         const snapshot = await getDoc(bookDocRef);
         if (snapshot.exists()) {
-            return snapshot.data() as Book;
+            return {
+                id: snapshot.id,
+                ...snapshot.data()
+            } as Book;
         }
         return null;
     } catch (error) {

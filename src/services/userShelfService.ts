@@ -1,4 +1,4 @@
-import { doc, getDocs, query, setDoc } from "firebase/firestore";
+import { doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { userShelvesCollection } from "../lib/firestore/collections";
 import { UserShelfEntry } from "@/types/user";
 
@@ -17,8 +17,20 @@ export const addBookToUserShelf = async (
 }; 
 
 
-export const getUserShelves = async(userId: string): Promise<UserShelfEntry[]> => {
-        const q = query(userShelvesCollection(userId));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => doc.data() as UserShelfEntry);
-  }
+export const getUserShelves = async(
+    userId: string,
+    status?: "currentlyReading" | "wantToRead" | "read"
+): Promise<UserShelfEntry[]> => {
+    let q;
+    if(status) {
+        q = query(
+            userShelvesCollection(userId),
+            where("status", '==', status)
+        );
+    } else {
+        q = query(userShelvesCollection(userId))
+    }
+
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => doc.data() as UserShelfEntry)
+}

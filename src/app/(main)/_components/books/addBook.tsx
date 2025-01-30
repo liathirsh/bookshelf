@@ -13,11 +13,12 @@ import debounce from "lodash/debounce" ;
 
 interface AddBookProps {
     status: "wantToRead" | "currentlyReading" | "read";
+    onBookAdded?: (book: Book) => void;
 }
 
 const placeholderImage = "/romantasylogo.png"
 
-export function AddBook( { status }: AddBookProps) {
+export function AddBook( { status, onBookAdded }: AddBookProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [books, setBooks] = useState<Book[]>([]);
     const [showSearch, setShowSearch] = useState(false);
@@ -77,6 +78,7 @@ export function AddBook( { status }: AddBookProps) {
 
         try { 
             await addBookToUserShelf(user.uid, book.id, status as UserShelfEntry["status"]);
+            onBookAdded?.(book)
             setShowSearch(false);
             setSearchQuery("")
             setBooks([]);
