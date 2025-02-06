@@ -1,44 +1,35 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { getBook } from '@/services/bookService';
-import { Book } from '@/types/book';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { DisplayStars } from '@/app/(main)/_components/books/displayStars';
+import StarRating from '@/app/(main)/_components/books/starRating';
+import debounce from 'lodash/debounce';
+import { useBook, useUpdateBookRating } from '@/hooks/useBooks';
 
 const fantasyLogo = "/romantasylogo.png"
 
 export default function BookPage() {
-    const [book, setBook] = useState<Book | null>(null);
-    const [loading, setLoading ] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    
+    const { user } = useAuth();
     const params = useParams();
     const bookId = params.id as string;
 
-    useEffect(() => {
-        const fetchBook = async () => {
-            try {
-                setLoading(true);
-                const bookData = await getBook(bookId)
-                if(bookData) {
-                    setBook(bookData)
-                } else {
-                    setError('Book not found')
-                }
-            } catch(error) {
-                console.error(error)
-                setError('Error fetching book')                    
-            } finally {
-                setLoading(false)
-            }
-        };
-        fetchBook();
-    }, [bookId])
+    const { data: book, isLoading, error } = useBook(bookId);
+    const { mutate: updateRating } = useUpdateBookRating();
 
-    if(loading) {
+    const debouncedRatingUpdate = useCallback((rating: number) => {
+        if (!user || !bookId) return;
+        updateRating({ bookId, userId: user.uid, rating });
+    }, [bookId, user, updateRating]);
+
+    const handleRatingChange = debounce(debouncedRatingUpdate, 500);
+
+    if(isLoading) {
         return (
             <div className="max-w-4xl mx-auto px-6 py-10">
                 <Card>
@@ -64,7 +55,7 @@ export default function BookPage() {
                     <CardContent className='p-6'>
                         <div className='text-center text-red-600'>
                             <h1 className="text-2xl font-bold mb-2">
-                                {error || "Book not found"}
+                                {error instanceof Error ? error.message : "Book not found"}
                             </h1>
                             <p> Sorry, we can&apos;t find the book you&apos;re looking for! </p>
                         </div>
@@ -95,21 +86,39 @@ export default function BookPage() {
                             <p className="text-gray-700">{book.description}</p>
                         </div>
                       
-                    {book.genre && book.genre.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                            {book.genre.map((genre) => (
-                                <span 
-                                    key={genre} 
-                                    className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
-                                >
-                                    {genre}
+                        {book.genre && book.genre.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {book.genre.map((genre) => (
+                                    <span
+                                        key={genre}
+                                        className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
+                                    >
+                                        {genre}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                        <Button> Add to Shelf </Button>
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">Rating:</h3>
+                            <div className="flex items-center gap-4">
+                                <DisplayStars rating={book.averageRating ?? 0} showNumber />
+                                <span className="text-sm text-gray-500">
+                                    ({book.ratingsCount} {book.ratingsCount === 1 ? 'rating' : 'ratings'})
                                 </span>
-                            ))}
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">Your Rating:</h3>
+                                <StarRating
+                                    averageRating={book.averageRating ?? 0}
+                                    userRating={book.userRating ?? 0}
+                                    onRatingChange={handleRatingChange}
+                                />
+                            </div>
                         </div>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
-    </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     )
 }

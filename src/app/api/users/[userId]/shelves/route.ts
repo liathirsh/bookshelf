@@ -1,10 +1,4 @@
-import { getDocs, query } from "firebase/firestore";
-import { userShelvesCollection } from "@/lib/firestore/collections";
-
-interface Shelf {
-  title: string;
-  books: string[];
-}
+import { getUserShelves } from "@/services/userShelfService";
 
 export async function GET(
   request: Request,
@@ -20,11 +14,7 @@ export async function GET(
   }
 
   try {
-    const q = query(userShelvesCollection(userId));
-    const snapshot = await getDocs(q);
-
-    const shelves: Shelf[] = snapshot.docs.map((doc) => doc.data() as Shelf);
-
+    const shelves = await getUserShelves(userId);
     return new Response(JSON.stringify(shelves), {
       status: 200,
       headers: { "Content-Type": "application/json" },

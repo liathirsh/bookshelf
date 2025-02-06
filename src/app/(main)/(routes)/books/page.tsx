@@ -1,9 +1,13 @@
-import Bookshelf from "../../_components/bookshelf/bookshelf";
 
-const BooksPage = () => {
+import Bookshelf from "../../_components/bookshelf/bookshelf";
+import { getAuthenticatedUser } from "@/lib/auth";
+
+const BooksPage = async () => {
+
+    const decodedToken = await getAuthenticatedUser();
     return (
             <div>
-                <Bookshelf />
+                <Bookshelf userId={decodedToken.uid} />
             </div>
     )
 };

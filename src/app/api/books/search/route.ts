@@ -1,31 +1,20 @@
 import { NextResponse } from "next/server";
-import { collection, getDocs, query, where, limit, orderBy } from "firebase/firestore"
-import { db } from "@/lib/firebase";
+import { getAllBooks } from '@/services/bookService';
 
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const queryText = searchParams.get("q")
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get('q');
 
-    if(!queryText) { 
-        return new Response(JSON.stringify({ error: "Search query is required"}))
+    if (!query) {
+        return NextResponse.json([]);
     }
 
-    const booksRef = collection(db, "books");
+    try {
+        const books = await getAllBooks();
 
-    const q = query(
-        booksRef,
-        where("title", ">=", queryText),
-        where("title", "<=", queryText + "\uf8ff"),
-        orderBy("title"),
-        limit(20)
-    )
-
-    const snapshot = await getDocs(q);
-    const books = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-    }))
-
-    return NextResponse.json(books, { status: 200 })
-
+        return NextResponse.json(books);
+    } catch (error) {
+        console.error('Search error:', error);
+        return NextResponse.json({ error: 'Failed to search books' }, { status: 500 });
+    }
 }
