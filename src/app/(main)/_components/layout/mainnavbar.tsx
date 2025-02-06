@@ -1,13 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { logout } from "@/hooks/useAuth";
-import { useAuthContext } from "@/context/auth-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export const MainNavbar = () => {
-    const { user } = useAuthContext();
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -19,24 +16,53 @@ export const MainNavbar = () => {
         }
     };
     return (
-        <div>
-            <Button asChild variant="default">
-                <Link href="/dashboard"> Home </Link>
-            </Button>
-            {user && (
-            <>
-                <Button asChild variant="default">
-                    <Link href="/books"> My Books </Link>
-                </Button>
-                <Button asChild variant="default">
-                    <Link href="/browse"> Browse </Link>
-                </Button>
-                <Button asChild variant="default">
-                    <Link href="/community"> Community </Link>
-                </Button>
-                <Button variant="default" onClick={handleLogout}> Log Out </Button>
-            </>
-            )}
-    </div>
+        <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <div className="flex-shrink-0">
+                        <Link href="/dashboard" className="text-xl font-semibold text-gray-800">
+                            Bookshelf
+                        </Link>
+                    </div>
+
+                    <div className="hidden sm:flex sm:space-x-8">
+                        <Link 
+                            href="/dashboard"
+                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                        >
+                            Home
+                        </Link>
+                        <Link 
+                            href="/books"
+                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                        >
+                            My Books
+                        </Link>
+                        <Link 
+                            href="/browse"
+                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                        >
+                            Browse
+                        </Link>
+                        <Link 
+                            href="/community"
+                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                        >
+                            Community
+                        </Link>
+                    </div>
+
+                    <div>
+                        <button 
+                            onClick={handleLogout}
+                            className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium
+                                     hover:bg-gray-800 transition-colors duration-200"
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
     )
 }

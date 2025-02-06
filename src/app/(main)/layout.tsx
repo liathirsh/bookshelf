@@ -5,9 +5,9 @@ import { Hero } from "./_components/hero";
 
 const MainPageLayout = ({ children }: { children: React.ReactNode}) => {
     return (
-        <div className = "h-auto overflow-y-visible md:h-screen md:overflow-y-auto">
+        <div className="min-h-screen flex flex-col">
             <MainNavbar />
-            <main className="h-full pt-10">
+            <main className="flex-1">
                 <Hero />
                 {children}
             </main>

@@ -39,32 +39,38 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
     }
 
     return (
-        <div className={`${variant === 'dashboard' ? 'p-0' : 'max-w-4xl mx-auto px-6 py-10'} bg-white rounded-lg`}>
-            <h2 className="text-xl font-semibold mb-4">{heading}</h2>
+        <div className={clsx(
+            'space-y-4 h-full flex flex-col',
+            variant === 'dashboard' ? 'p-0' : ''
+        )}>
+            <h2 className="text-xl font-semibold text-gray-800">{heading}</h2>
             <div className={clsx(
-                "grid gap-4",
+                "grid gap-6 flex-grow",
                 variant === 'dashboard'
                     ? "grid-cols-1"
-                    : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                    : "grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
             )}>
                 {isLoading ? (
-                    <div className="skeleton-loader">
+                    <div className="flex justify-center items-center min-h-[200px]">
                         <Spinner />
                     </div>
                 ) : !data?.books || data.books.length === 0 ? (
-                    <p className="text-lg text-gray-600 text-center">
-                        No books yet! Add some books to your shelf!
-                    </p>
+                    <div className="col-span-full text-center py-8">
+                        <p className="text-gray-500">
+                            No books yet! Add some books to your shelf!
+                        </p>
+                    </div>
                 ) : (
                     data.books.map((book) => (
                         <div key={book.id} className={clsx(
+                            "group",
                             variant === 'dashboard'
                                 ? "flex items-center space-x-4"
                                 : ""
                         )}>
                             <Button
                                 variant="ghost"
-                                className="w-full h-full p-0"
+                                className="w-full h-full p-0 hover:scale-105 transition-transform duration-200"
                                 onClick={() => handleBookClick(book)}
                             >
                                 <BookCard
@@ -76,17 +82,17 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
                         </div>
                     ))
                 )}
-                <div className={clsx(
-                    variant === 'dashboard'
-                        ? "flex items-center"
-                        : "flex justify-center"
-                )}>
-                    <AddBook
-                        status={status}
-                        onBookAdded={() => {
-                        }}
-                    />
-                </div>
+            </div>
+            <div className={clsx(
+                "mt-auto pt-4",
+                variant === 'dashboard'
+                    ? "flex items-center"
+                    : "flex justify-center items-center"
+            )}>
+                <AddBook
+                    status={status}
+                    onBookAdded={() => {}}
+                />
             </div>
         </div>
     )
