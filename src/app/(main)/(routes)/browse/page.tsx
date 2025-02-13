@@ -85,7 +85,8 @@ const BrowsePage = () => {
                     src={book.imageUrl || placeholderImage}
                     alt={book.title}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-
+                    width={300}
+                    height={300}
                     className="w-full h-64 object-cover rounded-lg shadow-md mb-2"
                   />
                   <h3 className="font-medium text-lg">{book.title}</h3>

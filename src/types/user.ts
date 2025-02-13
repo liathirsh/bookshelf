@@ -8,10 +8,8 @@ export type UserProfile = {
     favoriteGenres?: string[];
 }
 
-export type UserShelfEntry = {
+export interface UserShelfEntry {
     bookId: string;
-    status: "want-to-read" | "currently-reading" | "read";
+    status: "currentlyReading" | "wantToRead" | "read";
     addedAt: number;
-    lastReadAt?: number;
-    readingProgress?: number;
 }

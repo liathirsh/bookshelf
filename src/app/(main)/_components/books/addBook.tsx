@@ -9,7 +9,7 @@ import { Book } from '@/types/book';
 import { useShelves } from '@/hooks/useShelves';
 
 interface AddBookProps {
-    status: "wantToRead" | "currentlyReading" | "read";
+    status: "currentlyReading" | "wantToRead" | "read";
     onBookAdded?: (book: Book) => void;
 }
 

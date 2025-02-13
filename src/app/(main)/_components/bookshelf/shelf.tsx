@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
+import Image from 'next/image';
 
 interface ShelfProps {
     status: "currentlyReading" | "wantToRead" | "read";
@@ -15,6 +16,8 @@ interface ShelfProps {
     userId: string;
     variant?: 'default' | 'dashboard';
 }
+
+const DEFAULT_COVER = "/HeroPic.png";
 
 const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => {
     const router = useRouter();
@@ -39,63 +42,62 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
     }
 
     return (
-        <div className={clsx(
-            'space-y-4 h-full flex flex-col',
-            variant === 'dashboard' ? 'p-0' : ''
-        )}>
-            <h2 className="text-xl font-semibold text-gray-800">{heading}</h2>
-            <div className={clsx(
-                "grid gap-6 flex-grow",
-                variant === 'dashboard'
-                    ? "grid-cols-1"
-                    : "grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
-            )}>
-                {isLoading ? (
-                    <div className="flex justify-center items-center min-h-[200px]">
-                        <Spinner />
-                    </div>
-                ) : !data?.books || data.books.length === 0 ? (
-                    <div className="col-span-full text-center py-8">
-                        <p className="text-gray-500">
-                            No books yet! Add some books to your shelf!
-                        </p>
-                    </div>
-                ) : (
-                    data.books.map((book) => (
-                        <div key={book.id} className={clsx(
-                            "group",
-                            variant === 'dashboard'
-                                ? "flex items-center space-x-4"
-                                : ""
-                        )}>
-                            <Button
-                                variant="ghost"
-                                className="w-full h-full p-0 hover:scale-105 transition-transform duration-200"
-                                onClick={() => handleBookClick(book)}
-                            >
-                                <BookCard
-                                    book={book}
-                                    variant={variant}
-                                    className={variant === 'dashboard' ? "w-16" : "w-full"}
-                                />
-                            </Button>
+        <div className="flex flex-col h-full bg-white rounded-2xl p-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 antialiased">{heading}</h2>
+            
+            <div className="flex-1 min-h-0 overflow-hidden">
+                <div className="h-full overflow-y-auto">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-20">
+                            <Spinner />
                         </div>
-                    ))
-                )}
+                    ) : !data?.books || data.books.length === 0 ? (
+                        <div className="text-center py-2">
+                            <p className="text-gray-500">No books yet</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {data.books.map((book) => (
+                                <Button
+                                    key={book.id}
+                                    variant="ghost"
+                                    className="w-full p-0 h-auto hover:bg-transparent"
+                                    onClick={() => handleBookClick(book)}
+                                >
+                                    <div className="flex items-start gap-4 w-full">
+                                        <div className="w-12 h-16 relative flex-shrink-0">
+                                            <Image
+                                                src={book.imageUrl || DEFAULT_COVER}
+                                                alt={book.title}
+                                                fill
+                                                className="object-cover rounded-sm"
+                                                unoptimized={book.imageUrl?.includes('openlibrary.org')}
+                                            />
+                                        </div>
+                                        <div className="flex-1 text-left">
+                                            <h3 className="text-emerald-700 hover:text-emerald-600 font-medium antialiased drop-shadow-sm">
+                                                {book.title}
+                                            </h3>
+                                            <p className="text-gray-700 text-sm antialiased drop-shadow-sm">
+                                                by <span className="text-gray-600">{book.author}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Button>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className={clsx(
-                "mt-auto pt-4",
-                variant === 'dashboard'
-                    ? "flex items-center"
-                    : "flex justify-center items-center"
-            )}>
+
+            <div className="mt-8">
                 <AddBook
                     status={status}
                     onBookAdded={() => {}}
                 />
             </div>
         </div>
-    )
+    );
 }
 
 export default Shelf;

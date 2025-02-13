@@ -5,6 +5,8 @@ import { Book } from '@/types/book';
 import { UserShelfEntry } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 
+const DEFAULT_COVER = "/HeroPic.png";
+
 export function useShelfBooks(
     userId: string,
     status: "currentlyReading" | "wantToRead" | "read"
@@ -21,7 +23,12 @@ export function useShelfBooks(
             try {
                 const shelfEntries = await getUserShelves(userId, status);
                 const booksPromises = shelfEntries.map(entry => getBook(entry.bookId));
-                const books = (await Promise.all(booksPromises)).filter((book): book is Book => book !== null);
+                const books = (await Promise.all(booksPromises))
+                    .filter((book): book is Book => book !== null)
+                    .map(book => ({
+                        ...book,
+                        imageUrl: book.imageUrl || DEFAULT_COVER
+                    }));
                 return { books };
             } catch (error) {
                 const e = error as { code?: string; message?: string };
