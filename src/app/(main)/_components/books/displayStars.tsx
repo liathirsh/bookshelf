@@ -1,12 +1,6 @@
 import { FaStar } from 'react-icons/fa';
 import { cn } from '@/lib/utils';
 
-interface DisplayStarsProp {
-    rating: number;
-    showNumber?: boolean;
-    size?: 'sm' | 'md' | 'lg';
-}
-
 export const DisplayStars = ({ rating, showNumber }: { rating: number, showNumber?: boolean }) => {
     return (
         <div className="flex items-center gap-2">

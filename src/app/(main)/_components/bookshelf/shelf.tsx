@@ -3,7 +3,6 @@
 import { useShelfBooks } from '@/hooks/useShelves';
 import { Book } from '@/types/book';
 import { AddBook } from '../books/addBook';
-import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
 import { BookItem } from '../books/bookItem';
@@ -38,7 +37,9 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
     }
 
     return (
-        <div className="flex flex-col h-full bg-white rounded-2xl p-6">
+        <div className={`flex flex-col h-full bg-white rounded-2xl p-6 ${
+            variant === 'dashboard' ? 'shadow-sm' : ''
+        }`}>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6 antialiased">{heading}</h2>
             
             <div className="flex-1 min-h-0 overflow-hidden">

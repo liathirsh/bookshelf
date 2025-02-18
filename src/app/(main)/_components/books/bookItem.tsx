@@ -1,13 +1,5 @@
 import { Book } from '@/types/book';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import { useShelves } from '@/hooks/useShelves';
 import Image from 'next/image';
 import { ShelfButton } from './shelfButton';
 
@@ -21,7 +13,6 @@ interface BookItemProps {
 const DEFAULT_COVER = "/HeroPic.png";
 
 export function BookItem({ book, currentStatus, userId, onBookClick }: BookItemProps) {
-    const { mutate: updateBookShelf } = useShelves();
 
     const getCoverUrl = (book: Book) => {
         if (book.imageUrl) return book.imageUrl;
@@ -34,7 +25,6 @@ export function BookItem({ book, currentStatus, userId, onBookClick }: BookItemP
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
-        // The dropdown will be shown by the DropdownMenu component
     };
 
     return (

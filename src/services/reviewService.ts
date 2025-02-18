@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Review } from '@/types/review';
 import { doc, runTransaction } from 'firebase/firestore';

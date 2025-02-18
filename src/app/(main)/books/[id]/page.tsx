@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
@@ -17,7 +17,6 @@ import { ReviewModal } from '@/app/(main)/_components/books/ReviewModal';
 import { useQuery } from '@tanstack/react-query';
 import { getBookReviews } from '@/services/reviewService';
 import { ReviewCard } from '../../_components/books/ReviewCard';
-import { useScroll, useTransform, motion } from 'framer-motion';
 import { InfiniteBackground } from '../../_components/background';
 
 const fantasyLogo = "/romantasylogo.png"

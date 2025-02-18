@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getBook, getAllBooks, updateBookRating } from '@/services/bookService';
-import { Review } from '@/types/review';
 import { listReviewsForBook, createReview } from '@/services/reviewService';
 import { useAuth } from '@/hooks/useAuth';
 

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { Book } from '@/types/book';
-import { getAllBooks } from '@/services/bookService';
 import { SearchForBook } from '@/app/(main)/_components/books/searchForBook';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
