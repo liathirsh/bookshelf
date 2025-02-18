@@ -1,51 +1,102 @@
-import { doc, updateDoc, setDoc, getDocs, query, where, serverTimestamp } from "firebase/firestore";
-import { reviewsCollection, userReviewsCollection } from "@/lib/firestore/collections";
-import { Review } from "@/types/review";
+import { collection, addDoc, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Review } from '@/types/review';
+import { doc, runTransaction } from 'firebase/firestore';
+import { booksCollection } from '@/lib/firestore/collections';
 
-export const createReview = async(review: Review): Promise<string> => {
-    const globalReviewDocRef = doc(reviewsCollection);
-    const reviewId = globalReviewDocRef.id;
+const reviewsCollection = collection(db, 'reviews');
 
-    const newReview = {
-        ...review,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        userId: review.userId,
-        bookId: review.bookId
+export const createReview = async (review: Omit<Review, 'id'>) => {
+    try {
+        const bookRef = doc(booksCollection, review.bookId);
+        
+        return await runTransaction(db, async (transaction) => {
+            const bookDoc = await transaction.get(bookRef);
+            if (!bookDoc.exists()) {
+                throw new Error('Book not found');
+            }
+
+            const bookData = bookDoc.data();
+            const ratings = bookData.ratings || {};
+            ratings[review.userId] = review.rating;
+
+            const ratingValues = Object.values(ratings) as number[];
+            const averageRating = ratingValues.reduce((a, b) => a + b, 0) / ratingValues.length;
+
+            transaction.update(bookRef, {
+                ratings,
+                averageRating: Number(averageRating.toFixed(2)),
+                ratingsCount: ratingValues.length,
+                updatedAt: new Date().toISOString()
+            });
+
+            const reviewRef = doc(reviewsCollection);
+            transaction.set(reviewRef, review);
+            
+            return {
+                id: reviewRef.id,
+                ...review
+            };
+        });
+    } catch (error) {
+        console.error('Error creating review:', error);
+        throw error;
     }
+};
 
-    await setDoc(globalReviewDocRef, newReview);
+export const listReviewsForBook = async (bookId: string): Promise<Review[]> => {
+    try {
+        const q = query(
+            reviewsCollection,
+            where('bookId', '==', bookId),
+            orderBy('createdAt', 'desc')
+        );
+        
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        } as Review));
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        throw error;
+    }
+};
 
-    const userReviewDocRef = doc(userReviewsCollection(review.userId),reviewId);
-    await setDoc(userReviewDocRef, newReview);
+export const listUserReviews = async (userId: string): Promise<Review[]> => {
+    try {
+        const q = query(
+            reviewsCollection,
+            where('userId', '==', userId),
+            orderBy('createdAt', 'desc')
+        );
+        
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        } as Review));
+    } catch (error) {
+        console.error('Error fetching user reviews:', error);
+        throw error;
+    }
+};
 
-    return reviewId;
-
-}
-
-export const updateReview = async (userId: string, reviewId: string, updateFields: Partial<Review>) => {
-    const updatedData = {
-        ...updateFields,
-        updatedAt: serverTimestamp()
-    };
-
-    const globalReviewDocRef = doc(reviewsCollection, reviewId);
-    await updateDoc(globalReviewDocRef, updatedData);
-
-    const userReviewDocRef = doc(userReviewsCollection(userId), reviewId);
-    await updateDoc(userReviewDocRef, updatedData);
-
-    return true
-}
-
-export const listReviewsForBook = async(bookId: string): Promise<Review[]> => {
-    const q = query(reviewsCollection, where("bookId", "==", bookId));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map (doc => doc.data() as Review);
-}
-
-export const listUserReviews = async(userId: string): Promise<Review[]> => {
-    const userReviewsRef = userReviewsCollection(userId);
-    const snapshot = await getDocs(userReviewsRef);
-    return snapshot.docs.map(doc => doc.data() as Review)
-}
+export const getBookReviews = async (bookId: string) => {
+    try {
+        const q = query(
+            reviewsCollection,
+            where('bookId', '==', bookId),
+            orderBy('createdAt', 'desc')
+        );
+        
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        } as Review));
+    } catch (error) {
+        console.error('Error fetching book reviews:', error);
+        throw error;
+    }
+};

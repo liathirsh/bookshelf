@@ -3,12 +3,10 @@
 import { useShelfBooks } from '@/hooks/useShelves';
 import { Book } from '@/types/book';
 import { AddBook } from '../books/addBook';
-import BookCard from '../books/bookcard';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
-import { clsx } from 'clsx';
-import Image from 'next/image';
+import { BookItem } from '../books/bookItem';
 
 interface ShelfProps {
     status: "currentlyReading" | "wantToRead" | "read";
@@ -16,8 +14,6 @@ interface ShelfProps {
     userId: string;
     variant?: 'default' | 'dashboard';
 }
-
-const DEFAULT_COVER = "/HeroPic.png";
 
 const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => {
     const router = useRouter();
@@ -58,32 +54,13 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
                     ) : (
                         <div className="space-y-4">
                             {data.books.map((book) => (
-                                <Button
+                                <BookItem
                                     key={book.id}
-                                    variant="ghost"
-                                    className="w-full p-0 h-auto hover:bg-transparent"
-                                    onClick={() => handleBookClick(book)}
-                                >
-                                    <div className="flex items-start gap-4 w-full">
-                                        <div className="w-12 h-16 relative flex-shrink-0">
-                                            <Image
-                                                src={book.imageUrl || DEFAULT_COVER}
-                                                alt={book.title}
-                                                fill
-                                                className="object-cover rounded-sm"
-                                                unoptimized={book.imageUrl?.includes('openlibrary.org')}
-                                            />
-                                        </div>
-                                        <div className="flex-1 text-left">
-                                            <h3 className="text-emerald-700 hover:text-emerald-600 font-medium antialiased drop-shadow-sm">
-                                                {book.title}
-                                            </h3>
-                                            <p className="text-gray-700 text-sm antialiased drop-shadow-sm">
-                                                by <span className="text-gray-600">{book.author}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Button>
+                                    book={book}
+                                    currentStatus={status}
+                                    userId={userId}
+                                    onBookClick={handleBookClick}
+                                />
                             ))}
                         </div>
                     )}

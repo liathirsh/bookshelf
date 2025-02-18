@@ -1,4 +1,4 @@
-import { doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { doc, getDocs, query, setDoc, where, limit } from "firebase/firestore";
 import { userShelvesCollection } from "../lib/firestore/collections";
 import { UserShelfEntry } from "@/types/user";
 
@@ -23,13 +23,17 @@ export const addBookToUserShelf = async (
 
 export const getUserShelves = async(
     userId: string,
-    status?: "currentlyReading" | "wantToRead" | "read"
+    status?: "currentlyReading" | "wantToRead" | "read",
+    limitCount: number = 10
 ): Promise<UserShelfEntry[]> => {
     try {
         const baseQuery = userShelvesCollection(userId);
         const q = status
-            ? query(baseQuery, where("status", '==', status))
-            : query(baseQuery);
+            ? query(baseQuery, 
+                where("status", '==', status),
+                limit(limitCount)
+              )
+            : query(baseQuery, limit(limitCount));
 
         const snapshot = await getDocs(q);
         return snapshot.docs.map(doc => ({

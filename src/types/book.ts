@@ -22,10 +22,25 @@ export interface Book {
     createdAt?: Timestamp;
     ratings?: Record<string, number>;
     coverId?: string;
+    userStatuses?: Record<string, string>;
+    reviews?: Review[];
+    reviewsCount?: number;
 }
 
 export interface UserBook {
     bookId: string;
     status: string;
     lastUpdated: string;
+}
+
+export interface Review {
+    id: string;
+    bookId: string;
+    userId: string;
+    userName: string;
+    userPhotoURL?: string;
+    rating: number;
+    content: string;
+    createdAt: string;
+    likes: number;
 }

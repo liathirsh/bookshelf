@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUserShelves, addBookToUserShelf } from '@/services/userShelfService';
 import { getBook } from '@/services/bookService';
 import { Book } from '@/types/book';
@@ -46,11 +46,18 @@ export function useShelfBooks(
 }
 
 export function useShelves() {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: ({ userId, bookId, status }: { 
             userId: string; 
             bookId: string; 
             status: UserShelfEntry["status"]; 
         }) => addBookToUserShelf(userId, bookId, status),
+        onSuccess: (_, { userId, status }) => {
+            queryClient.invalidateQueries({ 
+                queryKey: ['shelves', userId, status]
+            });
+        }
     });
 } 

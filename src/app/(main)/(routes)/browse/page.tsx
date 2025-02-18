@@ -7,55 +7,44 @@ import { getAllBooks } from '@/services/bookService';
 import { SearchForBook } from '@/app/(main)/_components/books/searchForBook';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useAllBooks } from '@/hooks/useBooks';
 
 const placeholderImage = "/romantasylogo.png";
 const FEATURED_BOOKS = ["Epic Fantasy", "Historical", "Romantic"];
 
 const BrowsePage = () => {
+  const { data: allBooks, isLoading, error } = useAllBooks();
   const [genres, setGenres] = useState<{ genre: string; books: Book[] }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
   const booksPerGenre = 5;
 
   useEffect(() => {
-    async function loadBooks() {
-      try {
-        const allBooks = await getAllBooks();
-        const groupedByGenre = allBooks.reduce(
-          (acc: Record<string, { genre: string; books: Book[] }>, book: Book) => {
-            const bookGenres = book.genre.length > 0 ? book.genre : ["Unknown"];
-            bookGenres.forEach((genre) => {
-              if (!acc[genre]) {
-                acc[genre] = { genre, books: [] };
-              }
-              acc[genre].books.push(book);
-            });
-            return acc;
-          },
-          {}
-        );
+    if (!allBooks) return;
+    
+    const groupedByGenre = allBooks.reduce(
+      (acc: Record<string, { genre: string; books: Book[] }>, book: Book) => {
+        const bookGenres = book.genre.length > 0 ? book.genre : ["Unknown"];
+        bookGenres.forEach((genre) => {
+          if (!acc[genre]) {
+            acc[genre] = { genre, books: [] };
+          }
+          acc[genre].books.push(book);
+        });
+        return acc;
+      },
+      {}
+    );
 
-        const filteredGenres = Object.values(groupedByGenre)
-          .filter((genreObj) => FEATURED_BOOKS.includes(genreObj.genre))
-          .map((genreObj) => ({
-            ...genreObj,
-            books: genreObj.books.slice(0, booksPerGenre),
-          }));
+    const filteredGenres = Object.values(groupedByGenre)
+      .filter((genreObj) => FEATURED_BOOKS.includes(genreObj.genre))
+      .map((genreObj) => ({
+        ...genreObj,
+        books: genreObj.books.slice(0, booksPerGenre),
+      }));
 
-        setGenres(filteredGenres);
-        console.log(filteredGenres)
-      } catch (e) {
-        console.error("Error fetching books", e);
-        setError("Failed to load books");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadBooks();
-  }, []);
+    setGenres(filteredGenres);
+  }, [allBooks]);
 
   function handleBookSelected(book: Book) {
     router.push(`/books/${book.id}`);
@@ -69,7 +58,7 @@ const BrowsePage = () => {
       {isLoading ? (
         <Spinner />
       ) : error ? (
-        <p className="text-red-600">{error}</p>
+        <p className="text-red-600">{error.toString()}</p>
       ) : (
         genres.map((genre) => (
           <div key={genre.genre} className="mb-12">

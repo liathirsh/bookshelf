@@ -1,8 +1,11 @@
 export interface Review {
-    userId: string;
+    id: string;
     bookId: string;
+    userId: string;
+    userName: string;
+    userPhotoURL?: string;
     rating: number;
-    reviewText: string;
-    createdAt: number;
-    updatedAt?: number;
+    content: string;
+    createdAt: string;
+    likes: number;
 }

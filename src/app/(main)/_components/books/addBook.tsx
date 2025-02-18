@@ -14,12 +14,9 @@ interface AddBookProps {
 }
 
 export function AddBook({ status, onBookAdded }: AddBookProps) {
-    const [showSearch, setShowSearch] = useState(false);
     const { user } = useAuth();
-    const {
-        mutate: addBookToShelf,
-        isPending
-    } = useShelves();
+    const [showSearch, setShowSearch] = useState(false);
+    const { mutate: addBookToShelf, isPending } = useShelves();
 
     function handleAddBook(book: Book) {
         if(!user) {
@@ -61,5 +58,5 @@ export function AddBook({ status, onBookAdded }: AddBookProps) {
                 </div>
             )}
         </div>
-    )
+    );
 }

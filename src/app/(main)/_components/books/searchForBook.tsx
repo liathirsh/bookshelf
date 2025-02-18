@@ -4,6 +4,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Book } from '@/types/book';
 import debounce from 'lodash/debounce';
 import { Input } from '@/components/ui/input';
+import { getAllBooks } from '@/services/bookService';
 
 const placeholderImage = "/romantasylogo.png"
 
@@ -36,21 +37,14 @@ export function SearchForBook({ onBookSelected, placeholder = "Search for a book
         setError(null);
 
         try {
-            const encodedQuery = encodeURIComponent(normalizedQuery);
-            const response = await fetch(`/api/books/search?q=${encodedQuery}`);
-            if (!response.ok) throw new Error("Failed to fetch books");
-            
-            const data: Book[] = await response.json();
-            console.log('API Response:', data);
-            
-            const filteredBooks = data.filter(book => 
+            const allBooks = await getAllBooks();
+            const filteredBooks = allBooks.filter(book => 
                 book.title.toLowerCase().includes(normalizedQuery) ||
                 book.author.toLowerCase().includes(normalizedQuery) ||
                 (book.genre && book.genre.some(g => 
                     g.toLowerCase().includes(normalizedQuery)
                 ))
             );
-            console.log('Filtered Books:', filteredBooks); 
             
             searchCache.set(normalizedQuery, filteredBooks);
             setBooks(filteredBooks);

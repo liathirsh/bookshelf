@@ -45,10 +45,10 @@ export const MainNavbar = () => {
                             Browse
                         </Link>
                         <Link 
-                            href="/community"
+                            href="/recommendations"
                             className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                         >
-                            Community
+                            Recommendations
                         </Link>
                     </div>
 

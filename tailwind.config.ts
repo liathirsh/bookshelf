@@ -9,6 +9,16 @@ export default {
   ],
   theme: {
   	extend: {
+		animation: {
+			'float': 'float 40s linear infinite',
+		  },
+		  keyframes: {
+			float: {
+			  '0%': { backgroundPosition: '0% 0%' },
+			  '50%': { backgroundPosition: '25% 50%' },
+			  '100%': { backgroundPosition: '0% 0%' },
+			},
+		  },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

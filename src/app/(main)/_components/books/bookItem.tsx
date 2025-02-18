@@ -6,9 +6,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useShelves } from '@/hooks/useShelves';
 import Image from 'next/image';
+import { ShelfButton } from './shelfButton';
 
 interface BookItemProps {
     book: Book;
@@ -22,75 +23,59 @@ const DEFAULT_COVER = "/HeroPic.png";
 export function BookItem({ book, currentStatus, userId, onBookClick }: BookItemProps) {
     const { mutate: updateBookShelf } = useShelves();
 
-    const handleMoveBook = (newStatus: BookItemProps['currentStatus']) => {
-        if (!book.id) return;
-        
-        updateBookShelf(
-            {
-                userId,
-                bookId: book.id,
-                status: newStatus,
-            },
-            {
-                onError: (error) => {
-                    console.error('Error moving book:', error);
-                    alert("Error moving book. Please try again");
-                }
-            }
-        );
+    const getCoverUrl = (book: Book) => {
+        if (book.imageUrl) return book.imageUrl;
+        if (book.volumeInfo?.imageLinks?.thumbnail) {
+            return book.volumeInfo.imageLinks.thumbnail.replace('zoom=1', 'zoom=0');
+        }
+        if (book.thumbnail) return book.thumbnail;
+        return DEFAULT_COVER;
+    };
+
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        // The dropdown will be shown by the DropdownMenu component
     };
 
     return (
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex items-center gap-2 w-full group" onContextMenu={handleContextMenu}>
             <Button
                 variant="ghost"
-                className="flex-1 p-0 h-auto hover:bg-transparent focus:outline-none"
+                className="flex-1 p-0 h-auto hover:bg-transparent"
                 onClick={() => onBookClick(book)}
             >
                 <div className="flex items-start gap-4 w-full">
                     <div className="w-12 h-16 relative flex-shrink-0">
                         <Image
-                            src={book.imageUrl || DEFAULT_COVER}
+                            src={getCoverUrl(book)}
                             alt={book.title}
                             fill
                             className="object-cover rounded-sm"
-                            unoptimized={book.imageUrl?.includes('openlibrary.org')}
+                            unoptimized={true}
+                            onError={(e) => {
+                                const img = e.target as HTMLImageElement;
+                                img.src = DEFAULT_COVER;
+                            }}
                         />
                     </div>
-                    <div className="flex-1 text-left font-[-apple-system,BlinkMacSystemFont,system-ui,'Segoe UI',Roboto]">
-                        <h3 className="text-emerald-600 hover:text-emerald-500 font-bold tracking-normal">
+                    <div className="flex-1 text-left">
+                        <h3 className="text-emerald-700 hover:text-emerald-600 font-medium antialiased drop-shadow-sm">
                             {book.title}
                         </h3>
-                        <p className="text-gray-600 text-sm tracking-normal">
-                            by <span className="text-gray-500">{book.author}</span>
+                        <p className="text-gray-700 text-sm antialiased drop-shadow-sm">
+                            by <span className="text-gray-600">{book.author}</span>
                         </p>
                     </div>
                 </div>
             </Button>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {currentStatus !== "currentlyReading" && (
-                        <DropdownMenuItem onClick={() => handleMoveBook("currentlyReading")}>
-                            Move to Currently Reading
-                        </DropdownMenuItem>
-                    )}
-                    {currentStatus !== "wantToRead" && (
-                        <DropdownMenuItem onClick={() => handleMoveBook("wantToRead")}>
-                            Move to Want to Read
-                        </DropdownMenuItem>
-                    )}
-                    {currentStatus !== "read" && (
-                        <DropdownMenuItem onClick={() => handleMoveBook("read")}>
-                            Move to Read
-                        </DropdownMenuItem>
-                    )}
-                </DropdownMenuContent>
-            </DropdownMenu>
+            
+            <ShelfButton 
+                bookId={book.id} 
+                userId={userId}
+                currentStatus={currentStatus}
+                variant="ghost"
+                showIcon
+            />
         </div>
     );
 } 
