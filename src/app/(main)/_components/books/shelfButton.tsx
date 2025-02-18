@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useShelves } from '@/hooks/useShelves';
 import { ChevronDown } from "lucide-react";
+import { clsx } from "clsx";
 
 interface ShelfButtonProps {
     bookId: string;
@@ -44,15 +45,21 @@ export function ShelfButton({ bookId, userId, currentStatus, variant = "default"
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant={variant} className={showIcon ? "h-8 w-8 p-0" : undefined}>
+                <Button 
+                    variant={variant} 
+                    className={clsx(
+                        "flex-shrink-0",
+                        showIcon ? "h-6 w-6 p-0" : undefined
+                    )}
+                >
                     {showIcon ? (
-                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                        <ChevronDown className="h-3 w-3 text-gray-400" />
                     ) : (
                         'Add to Shelf'
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-48">
                 {(!currentStatus || currentStatus !== "currentlyReading") && (
                     <DropdownMenuItem onClick={() => handleShelfUpdate("currentlyReading")}>
                         {currentStatus ? 'Move to' : 'Add to'} Currently Reading

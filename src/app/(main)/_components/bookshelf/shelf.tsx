@@ -14,7 +14,7 @@ interface ShelfProps {
     variant?: 'default' | 'dashboard';
 }
 
-const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => {
+const Shelf = ({ status, heading, userId }: ShelfProps) => {
     const router = useRouter();
     const { data, isLoading, error } = useShelfBooks(userId, status);
 
@@ -37,9 +37,7 @@ const Shelf = ({ status, heading, userId, variant = 'default' }: ShelfProps) => 
     }
 
     return (
-        <div className={`flex flex-col h-full bg-white rounded-2xl p-6 ${
-            variant === 'dashboard' ? 'shadow-sm' : ''
-        }`}>
+        <div className="flex flex-col h-full bg-white rounded-2xl p-6">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6 antialiased">{heading}</h2>
             
             <div className="flex-1 min-h-0 overflow-hidden">

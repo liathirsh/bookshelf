@@ -8,17 +8,16 @@ export default async function DashboardPage() {
   const decodedToken = await getAuthenticatedUser();
 
     return (
-      <div className="grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-12 gap-6 p-8">
         <section className="col-span-12 lg:col-span-3">
-          <Shelf status="currentlyReading" heading="Currently Reading" variant="dashboard" userId={decodedToken.uid} />
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <Shelf status="currentlyReading" heading="Currently Reading" variant="dashboard" userId={decodedToken.uid} />
+          </div>
         </section>
-        <section className="col-span-12 lg:col-span-6">
+        <section className="col-span-12 lg:col-span-9">
           <Feed />
         </section>
-        <section className="col-span-12 lg:col-span-3 space-y-6">
-          <Recommendations />
-        </section>
-    </div>
-  );
+      </div>
+    );
 }
 

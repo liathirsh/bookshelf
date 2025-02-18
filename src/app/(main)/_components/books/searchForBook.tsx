@@ -72,7 +72,7 @@ export function SearchForBook({ onBookSelected, placeholder = "Search for a book
                 placeholder={placeholder}
                 value={searchQuery}
                 onChange={handleInputChange}
-                className="w-full border border-gray-500 rounded-md"
+                className="w-full bg-white border border-gray-300 rounded-md shadow-sm"
             />
             {isLoading ? (
                 <div className="flex justify-center items-center p-4">
