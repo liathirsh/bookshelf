@@ -1,5 +1,4 @@
 import { Book } from '@/types/book';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ShelfButton } from './shelfButton';
 
@@ -29,7 +28,7 @@ export function BookItem({ book, currentStatus, userId, onBookClick }: BookItemP
 
     return (
         <div className="flex items-start justify-between w-full py-2 group mt-1" onContextMenu={handleContextMenu}>
-            <div className="flex items-start gap-3 flex-1">
+            <div className="flex items-start gap-3 flex-1" onClick={() => onBookClick(book)}>
                 <div className="w-10 h-14 relative flex-shrink-0">
                     <Image
                         src={getCoverUrl(book)}

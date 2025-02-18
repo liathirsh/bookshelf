@@ -1,6 +1,5 @@
 import Shelf from "../_components/bookshelf/shelf";
 import  Feed  from "../_components/community/feed";
-import  Recommendations  from "../_components/recommendations";
 import { getAuthenticatedUser } from "@/lib/auth";
 
 export default async function DashboardPage() {
