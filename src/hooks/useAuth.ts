@@ -61,7 +61,7 @@ export function useAuth() {
     return state;
 }
 
-export async function signInWithGoogle() {
+export function signInWithGoogle(){
     const provider = new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
 }

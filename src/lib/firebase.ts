@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, serverTimestamp } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -13,6 +13,7 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Log config without sensitive data
 console.log('Firebase Client Config:', {
     hasApiKey: !!firebaseConfig.apiKey,
     authDomain: firebaseConfig.authDomain,
@@ -20,10 +21,16 @@ console.log('Firebase Client Config:', {
     environment: process.env.NODE_ENV
 });
 
-
+// Initialize Firebase only once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const googleAuthProvider = new GoogleAuthProvider();
 
-export { auth, db, storage };
+// Configure Google Auth Provider
+googleAuthProvider.setCustomParameters({
+    prompt: 'select_account'
+});
+
+export { auth, db, storage, googleAuthProvider, serverTimestamp };
