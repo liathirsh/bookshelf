@@ -23,10 +23,10 @@ export async function POST(req: NextRequest) {
             });
 
             return response;
-        } catch (error) {
+        } catch (error: unknown) {
             return NextResponse.json({ error: 'Unauthorized request' }, { status: 401 });
         }
-    } catch (error) {
+    } catch (error: unknown) {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
