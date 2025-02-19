@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/firebaseAdmin';
 
-type SessionResult = 
-    | string 
-    | { success: false; error: string; details: string };
-
 export async function POST(req: NextRequest) {
     const { idToken } = await req.json();
     if (!idToken) {
