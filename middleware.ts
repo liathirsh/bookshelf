@@ -3,6 +3,11 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/firebaseAdmin";
 
 export async function middleware(req: NextRequest) {
+    
+    if (req.nextUrl.pathname.startsWith('/api/auth/')) {
+        return NextResponse.next();
+    }
+
     const sessionCookie = req.cookies.get('sessionToken')?.value ?? '';
     console.log('Session Cookie:', sessionCookie)
 
@@ -23,6 +28,10 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/books/:path*','/dashboard/:path*'],
+    matcher: [
+        '/books/:path*',
+        '/dashboard/:path*',
+        '/api/:path*'  
+    ],
     runtime: 'nodejs'
 };
