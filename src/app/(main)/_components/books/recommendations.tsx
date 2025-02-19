@@ -121,7 +121,7 @@ const Recommendations = () => {
                             >
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h3 className="font-semibold">"{book.title}"</h3>
+                                        <h3 className="font-semibold">&ldquo;{book.title}&rdquo;</h3>
                                         <p className="text-sm text-gray-600">by {book.author}</p>
                                         <p className="text-sm mt-1">{book.description}</p>
                                     </div>
