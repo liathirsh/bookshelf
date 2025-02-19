@@ -1058,6 +1058,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@google/generative-ai@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@google/generative-ai@npm:0.21.0"
+  checksum: 91345a8399b5e71382193d0eac47a4b264613a9d7e48a431290b523e3fbb44a207a33bdead304f181987e5a0127a84168c4e21cf461c1087cd3b0ebc5125d13d
+  languageName: node
+  linkType: hard
+
 "@grpc/grpc-js@npm:^1.10.9":
   version: 1.12.5
   resolution: "@grpc/grpc-js@npm:1.12.5"
@@ -1576,6 +1583,13 @@ __metadata:
   version: 1.1.0
   resolution: "@protobufjs/utf8@npm:1.1.0"
   checksum: f9bf3163d13aaa3b6f5e6fbf37a116e094ea021c0e1f2a7ccd0e12a29e2ce08dafba4e8b36e13f8ed7397e1591610ce880ed1289af4d66cf4ace8a36a9557278
+  languageName: node
+  linkType: hard
+
+"@radix-ui/number@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@radix-ui/number@npm:1.1.0"
+  checksum: e4fc7483c19141c25dbaf3d140b75e2b7fed0bfa3ad969f4441f0266ed34b35413f57a35df7b025e2a977152bbe6131849d3444fc6f15a73345dfc2bfdc105fa
   languageName: node
   linkType: hard
 
@@ -2141,6 +2155,33 @@ __metadata:
     "@types/react-dom":
       optional: true
   checksum: 4a57f5af51387ae7621a6d0c7e3c743f16b06afda9311e6e5a39c023157d6a314931170dd794f901b59c0c768f0c3a121b8af59f7f80e58eb87512fb4540b037
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-scroll-area@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@radix-ui/react-scroll-area@npm:1.2.3"
+  dependencies:
+    "@radix-ui/number": 1.1.0
+    "@radix-ui/primitive": 1.1.1
+    "@radix-ui/react-compose-refs": 1.1.1
+    "@radix-ui/react-context": 1.1.1
+    "@radix-ui/react-direction": 1.1.0
+    "@radix-ui/react-presence": 1.1.2
+    "@radix-ui/react-primitive": 2.0.2
+    "@radix-ui/react-use-callback-ref": 1.1.0
+    "@radix-ui/react-use-layout-effect": 1.1.0
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 68f532ca63fd58ac62df3340b0a541300b787daca5ff5ce72fdd851ab1fba2276f5b25f0cf00e295140c7104ba0070c77ea8401730383823df368c5a01021870
   languageName: node
   linkType: hard
 
@@ -3092,11 +3133,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bookshelfapp@workspace:."
   dependencies:
+    "@google/generative-ai": ^0.21.0
     "@hookform/resolvers": ^3.9.1
     "@radix-ui/react-avatar": ^1.1.1
     "@radix-ui/react-dialog": ^1.1.2
     "@radix-ui/react-dropdown-menu": ^2.1.6
     "@radix-ui/react-label": ^2.1.0
+    "@radix-ui/react-scroll-area": ^1.2.3
     "@radix-ui/react-separator": ^1.1.2
     "@radix-ui/react-slot": ^1.1.0
     "@radix-ui/react-toast": ^1.2.2
