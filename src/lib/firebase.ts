@@ -11,16 +11,7 @@ const firebaseConfig = {
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
-
-const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-for (const field of requiredFields) {
-    if (!firebaseConfig[field as keyof typeof firebaseConfig]) {
-        console.error(`Missing required Firebase configuration field: ${field}`);
-        throw new Error(`Missing required Firebase configuration field: ${field}`);
-    }
-}
 
 const app = initializeApp(firebaseConfig);
   
