@@ -9,13 +9,24 @@ export function useAuth() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
-                // When user signs in, get a new token and set the session
-                const idToken = await firebaseUser.getIdToken(true);
-                await fetch('/api/auth/set-session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ idToken }),
-                });
+                try {
+                    const idToken = await firebaseUser.getIdToken(true);
+                    const response = await fetch('/api/auth/set-session', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ idToken }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to set session');
+                    }
+                } catch (error) {
+                    console.error('Error setting session:', error);
+                }
             }
             setUser(firebaseUser);
             setLoading(false);
