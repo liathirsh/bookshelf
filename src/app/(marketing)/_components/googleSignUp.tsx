@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import googlelogin from "../../../../public/googlelogin.png"
-import { signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleAuthProvider } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,33 +14,27 @@ export function GoogleSignUpButton() {
 
     async function handleGoogleSignUp() {
         try {
-            if (/mobile|android|iphone/i.test(navigator.userAgent)) {
-                await signInWithRedirect(auth, googleAuthProvider);
-            } else {
-                const result = await signInWithPopup(auth, googleAuthProvider);
-                const idToken = await result.user.getIdToken();
+            const result = await signInWithPopup(auth, googleAuthProvider);
+            const idToken = await result.user.getIdToken();
 
-                const response = await fetch("/api/auth/set-session", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        // Add CSRF protection
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    credentials: 'include', // Important for cookies
-                    body: JSON.stringify({ idToken }),
-                });
+            const response = await fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                },
+                credentials: 'include',
+                body: JSON.stringify({ idToken }),
+            });
 
-                if(!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || "Failed to set session cookie");
-                }
-
-                router.push("/dashboard");
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to set session');
             }
+
+            router.push("/dashboard");
         } catch (error) {
             toast({ 
-                title: "Sign In Failed" ,
+                title: "Sign In Failed",
                 description: error instanceof Error ? error.message : "Please try again",
                 variant: "destructive"
             });

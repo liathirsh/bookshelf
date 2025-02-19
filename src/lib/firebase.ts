@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics, isSupported } from "firebase/analytics";
 import { getFirestore, serverTimestamp } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
@@ -13,19 +12,16 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Initialize only once
 const app = initializeApp(firebaseConfig);
-  
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-export const googleAuthProvider = new GoogleAuthProvider();
-export { serverTimestamp };
-  
-export let analytics: ReturnType<typeof getAnalytics> | null = null;
-if (typeof window !== 'undefined') {
-    isSupported().then((supported) => {
-        if (supported) {
-            analytics = getAnalytics(app)
-        }
-    });
-};
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const googleAuthProvider = new GoogleAuthProvider();
+
+// Configure Google Auth Provider
+googleAuthProvider.setCustomParameters({
+    prompt: 'select_account'
+});
+
+export { auth, db, storage, googleAuthProvider, serverTimestamp };

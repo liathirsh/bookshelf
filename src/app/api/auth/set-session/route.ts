@@ -1,47 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/firebaseAdmin'
+import { auth } from '@/lib/firebaseAdmin';
+
+type SessionResult = 
+    | string 
+    | { success: false; error: string; details: string };
 
 export async function POST(req: NextRequest) {
-    try {
-        const { idToken } = await req.json();
-        if (!idToken) {
-            console.error('No idToken provided');
-            return NextResponse.json({ error: 'ID token is required' }, { status: 400 });
-        }
-
-        const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
-
-        try {
-            const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
-            
-            const decodedClaims = await auth.verifySessionCookie(sessionCookie);
-            console.log('Session created for user:', decodedClaims.uid);
-
-            const response = NextResponse.json({ status: 'success' });
-            response.cookies.set('sessionToken', sessionCookie, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: expiresIn / 1000,
-                path: '/',
-            });
-
-            return response;
-        } catch (error: any) { 
-            console.error('Session creation error:', {
-                code: error?.code,
-                message: error?.message
-            });
-            return NextResponse.json({ 
-                error: 'Session creation failed',
-                details: error?.message || 'Unknown error'
-            }, { status: 401 });
-        }
-    } catch (error) {
-        console.error('Request processing error:', error);
+    const { idToken } = await req.json();
+    if (!idToken) {
         return NextResponse.json({ 
-            error: 'Internal server error',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        }, { status: 500 });
+            success: false, 
+            error: 'ID token is required' 
+        }, { status: 400 });
     }
+
+    const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+
+    const sessionCookie: SessionResult = await auth.createSessionCookie(idToken, { expiresIn })
+        .catch(error => ({
+            success: false,
+            error: 'Failed to create session',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        }));
+
+    if (typeof sessionCookie !== 'string') {
+        return NextResponse.json(sessionCookie, { status: 401 });
+    }
+
+    const response = NextResponse.json({ success: true });
+    
+    response.cookies.set('sessionToken', sessionCookie, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: expiresIn / 1000,
+        path: '/',
+    });
+
+    return response;
 }

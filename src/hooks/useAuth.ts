@@ -1,6 +1,8 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
-import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
 import { AuthState } from "@/types/auth";
 
 const initialState: AuthState = {
@@ -26,16 +28,17 @@ export function useAuth() {
                     });
 
                     if (!response.ok) {
-                        throw new Error('Failed to set session');
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to set session');
                     }
-                    
+
                     setState({ user: firebaseUser, loading: false });
                 } catch (error) {
                     console.error('Error setting session:', error);
                     setState({ 
                         user: null, 
                         loading: false, 
-                        error: 'Authentication failed' 
+                        error: error instanceof Error ? error.message : 'Authentication failed'
                     });
                     await signOut(auth);
                 }
@@ -50,7 +53,7 @@ export function useAuth() {
     return state;
 }
 
-export function signInWithGoogle(){
+export async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
 }
