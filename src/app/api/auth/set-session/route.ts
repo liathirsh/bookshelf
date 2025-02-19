@@ -23,10 +23,12 @@ export async function POST(req: NextRequest) {
             });
 
             return response;
-        } catch (error: unknown) {
+        } catch (error) {
+            console.error('Failed to create session cookie:', error);
             return NextResponse.json({ error: 'Unauthorized request' }, { status: 401 });
         }
-    } catch (error: unknown) {
+    } catch (error) {
+        console.error('Unexpected error in set-session:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
