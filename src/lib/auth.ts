@@ -1,25 +1,23 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/firebaseAdmin";
+import { ServerAuthUser } from "@/types/auth";
 
-export const getAuthenticatedUser = async () => {
+export async function getAuthenticatedUser(): Promise<ServerAuthUser> {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("sessionToken")?.value;
 
-const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get("sessionToken")?.value || "";
-
-    if(!sessionCookie) {
-        return redirect("/login");
+    if (!sessionCookie) {
+        redirect("/login");
     }
 
-    const decodedToken = await auth
-        .verifySessionCookie(sessionCookie, true)
-        .catch(() => null);
-    
-    if (!decodedToken) {
-        return redirect("/login")
+    try {
+        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+        return decodedToken;
+    } catch (error) {
+        console.error('Session verification failed:', error);
+        redirect("/login");
     }
-
-    return decodedToken;
 }
 
 export default getAuthenticatedUser;

@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User } from "firebase/auth";
+import { AuthState } from "@/types/auth";
+
+const initialState: AuthState = {
+    user: null,
+    loading: true
+};
 
 export function useAuth() {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [state, setState] = useState<AuthState>(initialState);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -15,7 +20,6 @@ export function useAuth() {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         credentials: 'include',
                         body: JSON.stringify({ idToken }),
@@ -24,17 +28,26 @@ export function useAuth() {
                     if (!response.ok) {
                         throw new Error('Failed to set session');
                     }
+                    
+                    setState({ user: firebaseUser, loading: false });
                 } catch (error) {
                     console.error('Error setting session:', error);
+                    setState({ 
+                        user: null, 
+                        loading: false, 
+                        error: 'Authentication failed' 
+                    });
+                    await signOut(auth);
                 }
+            } else {
+                setState({ user: null, loading: false });
             }
-            setUser(firebaseUser);
-            setLoading(false);
         });
+
         return () => unsubscribe();
     }, []);
 
-    return { user, loading };
+    return state;
 }
 
 export function signInWithGoogle(){
@@ -42,6 +55,11 @@ export function signInWithGoogle(){
     return signInWithPopup(auth, provider);
 }
 
-export function logout() {
-    return signOut(auth);
+export async function logout() {
+    try {
+        await signOut(auth);
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
 }

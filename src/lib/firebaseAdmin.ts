@@ -1,41 +1,26 @@
 import * as admin from 'firebase-admin';
 
 if (!admin.apps.length) {
-    // Log environment variables presence (not their values)
     console.log('Checking Firebase Admin environment variables:');
     console.log('FIREBASE_PROJECT_ID exists:', !!process.env.FIREBASE_PROJECT_ID);
     console.log('FIREBASE_CLIENT_EMAIL exists:', !!process.env.FIREBASE_CLIENT_EMAIL);
     console.log('FIREBASE_PRIVATE_KEY exists:', !!process.env.FIREBASE_PRIVATE_KEY);
 
-    // Handle private key with or without quotes
-    let privateKey = process.env.FIREBASE_PRIVATE_KEY;
-    if (privateKey) {
-        // Remove any surrounding quotes and properly handle newlines
-        privateKey = privateKey.replace(/\\n/g, '\n');
-        privateKey = privateKey.replace(/^["']|["']$/g, '');
-    }
-
-    const serviceAccount = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: privateKey
-    };
-
-    // Validate credentials
-    if (!serviceAccount.projectId || !serviceAccount.clientEmail || !serviceAccount.privateKey) {
-        const missingVars = [];
-        if (!serviceAccount.projectId) missingVars.push('FIREBASE_PROJECT_ID');
-        if (!serviceAccount.clientEmail) missingVars.push('FIREBASE_CLIENT_EMAIL');
-        if (!serviceAccount.privateKey) missingVars.push('FIREBASE_PRIVATE_KEY');
-        
-        throw new Error(
-            `Missing Firebase Admin credentials: ${missingVars.join(', ')}`
-        );
-    }
-
     try {
+        const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+        
+        console.log('Initializing Firebase Admin with:', {
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            hasPrivateKey: !!privateKey
+        });
+
         admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount as admin.ServiceAccount)
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey,
+            }),
         });
         console.log('Firebase Admin initialized successfully');
     } catch (error) {
