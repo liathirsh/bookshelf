@@ -23,8 +23,9 @@ export async function middleware(req: NextRequest) {
             },
         });
     } catch (error) {
-        console.error('Session verification failed:', error);
-        return NextResponse.redirect(new URL('/login', req.url));
+        const response = NextResponse.redirect(new URL('/login', req.url));
+        response.cookies.delete('sessionToken');
+        return response;
     }
 }
 

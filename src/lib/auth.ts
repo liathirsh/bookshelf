@@ -16,6 +16,7 @@ export async function getAuthenticatedUser(): Promise<ServerAuthUser> {
         return decodedToken;
     } catch (error) {
         console.error('Session verification failed:', error);
+        cookieStore.delete("sessionToken");
         redirect("/login");
     }
 }
