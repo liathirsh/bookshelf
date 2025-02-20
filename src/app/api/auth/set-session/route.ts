@@ -17,6 +17,12 @@ export async function POST(req: NextRequest) {
         let decodedToken;
         try {
             decodedToken = await auth.verifyIdToken(idToken);
+            if (Date.now() >= decodedToken.exp * 1000) {
+                return NextResponse.json({ 
+                    success: false,
+                    error: 'Token has expired'
+                }, { status: 401 });
+            }
         } catch (verifyError) {
             console.error('Token verification failed:', verifyError);
             return NextResponse.json({ 
@@ -26,7 +32,6 @@ export async function POST(req: NextRequest) {
             }, { status: 401 });
         }
 
-        // Then create the session cookie
         let sessionCookie;
         try {
             sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
@@ -39,7 +44,13 @@ export async function POST(req: NextRequest) {
             }, { status: 401 });
         }
 
-        const response = NextResponse.json({ success: true });
+        const response = NextResponse.json({ 
+            success: true,
+            user: {
+                uid: decodedToken.uid,
+                email: decodedToken.email,
+            }
+        });
         
         response.cookies.set('sessionToken', sessionCookie, {
             httpOnly: true,
