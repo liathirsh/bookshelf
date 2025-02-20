@@ -86,7 +86,7 @@ export function SignUpForm() {
                 Account created successfully. Welcome to Bookshelf! 
             </p>
         )}
-        <Button type="submit" className="w-full" disabled={state.success}>
+        <Button type="submit" variant="secondary" className="w-full" disabled={state.success}>
             {state.success ? <Spinner /> : "Sign Up"}
         </Button>
        </form>

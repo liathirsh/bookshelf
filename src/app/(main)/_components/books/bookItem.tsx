@@ -9,7 +9,7 @@ interface BookItemProps {
     onBookClick: (book: Book) => void;
 }
 
-const DEFAULT_COVER = "/HeroPic.png";
+const DEFAULT_COVER = "/images/heropic.png";
 
 export function BookItem({ book, currentStatus, userId, onBookClick }: BookItemProps) {
 

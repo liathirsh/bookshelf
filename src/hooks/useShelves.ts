@@ -5,7 +5,7 @@ import { Book } from '@/types/book';
 import { UserShelfEntry } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 
-const DEFAULT_COVER = "/HeroPic.png";
+const DEFAULT_COVER = "/images/heropic.png";
 
 export function useShelfBooks(
     userId: string,

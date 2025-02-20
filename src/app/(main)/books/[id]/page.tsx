@@ -19,7 +19,7 @@ import { getBookReviews } from '@/services/reviewService';
 import { ReviewCard } from '../../_components/books/ReviewCard';
 import { InfiniteBackground } from '../../_components/background';
 
-const fantasyLogo = "/romantasylogo.png"
+const fantasyLogo = "/images/romantasylogo.png"
 
 export default function BookPage() {
     const { user } = useAuth();

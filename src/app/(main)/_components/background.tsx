@@ -16,7 +16,7 @@ export function InfiniteBackground() {
                 className="absolute inset-0"
             >
                 <div 
-                    className="absolute inset-0 bg-[url('/romantasylogo.png')] opacity-5"
+                    className="absolute inset-0 bg-[url('/images/romantasylogo.png')] opacity-5"
                     style={{ 
                         backgroundSize: 'clamp(100px, 12vw, 250px)',
                         transform: 'rotate(15deg)',

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useAllBooks } from '@/hooks/useBooks';
 
-const placeholderImage = "/romantasylogo.png";
+const placeholderImage = "/images/romantasylogo.png";
 const FEATURED_BOOKS = ["Epic Fantasy", "Historical", "Romantic"];
 
 const BrowsePage = () => {

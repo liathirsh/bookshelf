@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import Link from "next/link";
 
-const placeholderImage = "/HeroPic.png";
+const placeholderImage = "/images/heropic.png";
 
 const Feed = () => {
     const [randomBooks, setRandomBooks] = useState<Book[]>([]);

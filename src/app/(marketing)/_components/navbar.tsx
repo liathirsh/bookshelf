@@ -28,7 +28,6 @@ export const Navbar = () => {
                         Bookshelf
                     </Link>
 
-                    {/* Navigation Items */}
                     <div className="flex items-center gap-4">
                         {loading ? (
                             <Spinner className="text-white" />
@@ -45,8 +44,8 @@ export const Navbar = () => {
                                 <Button 
                                     onClick={logout}
                                     className="bg-black/30 backdrop-blur-sm text-white border border-white/20
-                                             hover:bg-black/40 transition-all duration-200
-                                             [text-shadow:_1px_1px_2px_rgb(0_0_0_/_60%)]"
+                                                hover:bg-black/40 transition-all duration-200
+                                                [text-shadow:_1px_1px_2px_rgb(0_0_0_/_60%)]"
                                 >
                                     Log Out
                                 </Button>

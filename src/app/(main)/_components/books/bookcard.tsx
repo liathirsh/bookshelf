@@ -8,7 +8,7 @@ interface BookCardProps {
     className?: string;
 }
 
-const DEFAULT_COVER = "/HeroPic.png";
+const DEFAULT_COVER = "/images/heropic.png";
 
 const BookCard = ({ book, variant = 'default', className }: BookCardProps) => {
     if (!book) return null;

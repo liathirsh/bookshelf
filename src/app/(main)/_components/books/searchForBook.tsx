@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { Input } from '@/components/ui/input';
 import { getAllBooks } from '@/services/bookService';
 
-const placeholderImage = "/romantasylogo.png"
+const placeholderImage = "/images/romantasylogo.png"
 
 interface SearchForBookProps {
     onBookSelected?: (book: Book) => void;

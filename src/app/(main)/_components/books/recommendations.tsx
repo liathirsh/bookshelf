@@ -41,7 +41,10 @@ const parseRecommendations = (content: string): ParsedBook[] => {
 const Recommendations = () => {
     const { user } = useAuth();
     const { mutate: addBookToShelf } = useShelves();
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Message[]>([{
+        role: 'assistant',
+        content: 'Tell me what you enjoyed reading and let me give you recommendations! For example, you could tell me about your favorite fantasy books, or what kind of stories you like.'
+    }]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -154,37 +157,35 @@ const Recommendations = () => {
 
     return (
         <div className="flex flex-col h-[calc(100vh-100px)] max-w-4xl mx-auto p-6">            
-            {messages.length > 0 ? (
-                <>
-                    <Card className="flex-grow mb-6 p-6 bg-white shadow-md">
-                        <ScrollArea className="h-full pr-4">
-                            {messages.map((message, index) => (
-                                <div
-                                    key={index}
-                                    className={`mb-6 flex ${
-                                        message.role === 'user' ? 'justify-end' : 'justify-start'
-                                    }`}
-                                >
-                                    {renderMessage(message)}
-                                </div>
-                            ))}
-                        </ScrollArea>
-                    </Card>
-                </>
-            ) : null}
+            {messages.length > 0 && (
+                <Card className="mb-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border-none shadow-lg min-h-[200px]">
+                    <ScrollArea className="h-full pr-4">
+                        {messages.map((message, index) => (
+                            <div
+                                key={index}
+                                className={`mb-4 flex ${
+                                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                                }`}
+                            >
+                                {renderMessage(message)}
+                            </div>
+                        ))}
+                    </ScrollArea>
+                </Card>
+            )}
 
-            <form onSubmit={handleSubmit} className={`flex gap-3 ${!messages.length ? 'h-full items-center' : ''}`}>
+            <form onSubmit={handleSubmit} className="flex gap-3">
                 <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Tell me about books you've enjoyed reading..."
                     disabled={isLoading}
-                    className="shadow-sm bg-white"
+                    className="shadow-sm bg-white/80 backdrop-blur-sm border-none focus:ring-2 focus:ring-pink-200"
                 />
                 <Button 
                     type="submit" 
                     disabled={isLoading}
-                    className="px-6 shadow-sm"
+                    className="px-6 shadow-sm bg-pink-600 hover:bg-pink-700"
                 >
                     {isLoading ? 'Thinking...' : 'Send'}
                 </Button>

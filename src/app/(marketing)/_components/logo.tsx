@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import logo from "../../../../public/romantasylogo.png"
+
+const logo = "/images/romantasylogo.png"
 
 export const Logo = () => {
     return (
@@ -9,7 +10,7 @@ export const Logo = () => {
                 src={logo}
                 height="40"
                 width="40"
-                alt="Logo"
+                alt="Romantasy Logo"
             />
             <p className={cn("font-semibold")}>
                 Bookshelf

@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/firebaseAdmin";
 
-export async function middleware(req: NextRequest) {
-    if (req.nextUrl.pathname.startsWith('/api/auth/')) {
-        return NextResponse.next();
-    }
 
+export async function middleware(req: NextRequest) {
+    
     const sessionCookie = req.cookies.get('sessionToken')?.value;
     if (!sessionCookie) {
         return NextResponse.redirect(new URL('/login', req.url));
@@ -18,9 +16,7 @@ export async function middleware(req: NextRequest) {
         requestHeaders.set('X-User-ID', decodedToken.uid);
 
         return NextResponse.next({
-            request: {
-                headers: requestHeaders,
-            },
+            request: { headers: requestHeaders },
         });
     } catch (error) {
         const response = NextResponse.redirect(new URL('/login', req.url));
