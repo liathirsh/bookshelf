@@ -46,9 +46,11 @@ export const MainNavbar = () => {
                         </Link>
                         <Link 
                             href="/recommendations"
-                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                            className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2"
                         >
-                            Recommendations
+                            
+                            <span>AI Recommendor</span>
+                            
                         </Link>
                     </div>
 

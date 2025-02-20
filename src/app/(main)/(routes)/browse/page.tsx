@@ -50,49 +50,55 @@ const BrowsePage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-8 space-y-12">
-      <div>
-        <h1 className="text-3xl font-bold mb-6">Browse</h1>
-        <SearchForBook 
-          placeholder="Search by title, author, or genre" 
-          onBookSelected={handleBookSelected} 
-        />
-      </div>
-
-      {isLoading ? (
-        <Spinner />
-      ) : error ? (
-        <p className="text-red-600">{error.toString()}</p>
-      ) : (
-        genres.map((genre) => (
-          <div key={genre.genre} className="space-y-6">
-            <h2 className="text-2xl font-semibold">{genre.genre}</h2>
-            <div className="relative">
-              <div className="flex overflow-x-auto gap-6 pb-4 -mx-2 px-2 snap-x">
-                {genre.books.map((book) => (
-                  <div
-                    key={book.id}
-                    className="flex-none w-[180px] cursor-pointer transition-transform hover:scale-105 snap-start"
-                    onClick={() => handleBookSelected(book)}
-                  >
-                    <div className="aspect-[2/3] relative rounded-lg overflow-hidden shadow-md mb-4">
-                      <Image
-                        src={book.imageUrl || placeholderImage}
-                        alt={book.title}
-                        fill
-                        className="object-cover"
-                        sizes="180px"
-                      />
-                    </div>
-                    <h3 className="font-medium text-base line-clamp-1 mb-1">{book.title}</h3>
-                    <p className="text-gray-600 text-sm">{book.author}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+    <div className="flex-1 px-4 py-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-4">
+        <section className="flex flex-col">
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h1 className="text-2xl font-bold mb-4">Browse</h1>
+            <SearchForBook 
+              placeholder="Search by title, author, or genre" 
+              onBookSelected={handleBookSelected} 
+            />
           </div>
-        ))
-      )}
+        </section>
+
+        {isLoading ? (
+          <Spinner />
+        ) : error ? (
+          <p className="text-red-600">{error.toString()}</p>
+        ) : (
+          genres.map((genre) => (
+            <section key={genre.genre} className="flex flex-col">
+              <div className="bg-white rounded-lg shadow-md p-4">
+                <h2 className="text-xl font-semibold mb-4">{genre.genre}</h2>
+                <div className="relative">
+                  <div className="flex overflow-x-auto gap-4 pb-2 -mx-2 px-2 snap-x">
+                    {genre.books.map((book) => (
+                      <div
+                        key={book.id}
+                        className="flex-none w-[180px] cursor-pointer transition-transform hover:scale-105 snap-start"
+                        onClick={() => handleBookSelected(book)}
+                      >
+                        <div className="aspect-[2/3] relative rounded-lg overflow-hidden shadow-md mb-4">
+                          <Image
+                            src={book.imageUrl || placeholderImage}
+                            alt={book.title}
+                            fill
+                            className="object-cover"
+                            sizes="180px"
+                          />
+                        </div>
+                        <h3 className="font-medium text-base line-clamp-1 mb-1">{book.title}</h3>
+                        <p className="text-gray-600 text-sm">{book.author}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          ))
+        )}
+      </div>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export const Heading = () => {
                     <>
                         
                         <Button onClick={() => router.push('/sign-up')}>
-                            Sign In to Track Books
+                            Enter Bookshelf
                             <ArrowRight className="ml-2" />
                         </Button>
                     </>

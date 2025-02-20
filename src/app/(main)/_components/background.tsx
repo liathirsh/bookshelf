@@ -16,7 +16,7 @@ export function InfiniteBackground() {
                 className="absolute inset-0"
             >
                 <div 
-                    className="absolute inset-0 bg-[url('/images/romantasylogo.png')] opacity-5"
+                    className="absolute inset-0 bg-[#D6C8BD] opacity-5"
                     style={{ 
                         backgroundSize: 'clamp(100px, 12vw, 250px)',
                         transform: 'rotate(15deg)',
@@ -25,7 +25,7 @@ export function InfiniteBackground() {
                     }}
                 />
             </motion.div>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FDEDE6]/30 via-[#FDEDE6]/50 via-[#FDEDE6]/70 to-[#FDEDE6]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#A0968D]/50 to-[#D6C8BD]" />
         </div>
     );
 } 

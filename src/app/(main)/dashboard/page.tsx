@@ -14,7 +14,9 @@ export default async function DashboardPage() {
           </div>
         </section>
         <section className="col-span-12 lg:col-span-9">
-          <Feed />
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <Feed />
+          </div>
         </section>
       </div>
     );

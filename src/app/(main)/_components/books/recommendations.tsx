@@ -156,10 +156,10 @@ const Recommendations = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-100px)] max-w-4xl mx-auto p-6">            
+        <div className="flex flex-col h-full max-w-4xl mx-auto">            
             {messages.length > 0 && (
-                <Card className="mb-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border-none shadow-lg min-h-[200px]">
-                    <ScrollArea className="h-full pr-4">
+                <Card className="mb-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border-none shadow-sm">
+                    <ScrollArea className="h-[500px] pr-4">
                         {messages.map((message, index) => (
                             <div
                                 key={index}
