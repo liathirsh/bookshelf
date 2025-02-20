@@ -1,27 +1,37 @@
 import * as admin from 'firebase-admin';
 
-function formatPrivateKey(key: string | undefined) {
-    return key ? key.replace(/\\n/g, '\n') : undefined;
-}
-
 function getFirebaseAdminApp() {
     if (admin.apps.length > 0) {
         return admin.apps[0]!;
     }
 
-    const privateKey = formatPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+    
+    if (!privateKey) {
+        throw new Error('FIREBASE_PRIVATE_KEY is missing');
+    }
 
-    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
+    // Handle both formats of private key
+    const formattedKey = privateKey.includes('-----BEGIN PRIVATE KEY-----')
+        ? privateKey.replace(/\\n/g, '\n')
+        : privateKey;
+
+    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL) {
         throw new Error('Missing Firebase Admin credentials');
     }
 
-    return admin.initializeApp({
-        credential: admin.credential.cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: privateKey,
-        }),
-    });
+    try {
+        return admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: formattedKey,
+            }),
+        });
+    } catch (error) {
+        console.error('Firebase Admin initialization error:', error);
+        throw error;
+    }
 }
 
 const app = getFirebaseAdminApp();

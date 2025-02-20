@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
     try {
         const { idToken } = await req.json();
         if (!idToken) {
-            console.error('Missing idToken');
             return NextResponse.json({ 
                 success: false, 
                 error: 'ID token is required' 
@@ -14,17 +13,37 @@ export async function POST(req: NextRequest) {
 
         const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
 
-        console.log('Verifying token...');
-        const decodedToken = await auth.verifyIdToken(idToken);
-        console.log('Token verified for user:', decodedToken.uid);
+        // First verify the token
+        let decodedToken;
+        try {
+            decodedToken = await auth.verifyIdToken(idToken);
+        } catch (verifyError) {
+            console.error('Token verification failed:', verifyError);
+            return NextResponse.json({ 
+                success: false,
+                error: 'Invalid token',
+                details: verifyError instanceof Error ? verifyError.message : 'Token verification failed'
+            }, { status: 401 });
+        }
 
-        console.log('Creating session cookie...');
-        const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+        // Then create the session cookie
+        let sessionCookie;
+        try {
+            sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+        } catch (cookieError) {
+            console.error('Session cookie creation failed:', cookieError);
+            return NextResponse.json({ 
+                success: false,
+                error: 'Failed to create session cookie',
+                details: cookieError instanceof Error ? cookieError.message : 'Cookie creation failed'
+            }, { status: 401 });
+        }
 
         const response = NextResponse.json({ success: true });
+        
         response.cookies.set('sessionToken', sessionCookie, {
             httpOnly: true,
-            secure: true, // Always use secure in production
+            secure: true,
             sameSite: 'lax',
             maxAge: expiresIn / 1000,
             path: '/',
