@@ -1,7 +1,7 @@
 import { doc, getDoc, addDoc, updateDoc, getDocs } from 'firebase/firestore';
-import { serverTimestamp } from '@/lib/firebase';
-import { Book } from '@/types/book';
-import { booksCollection } from '@/lib/firestore/collections';
+import { serverTimestamp } from '../lib/firebase';
+import { Book } from '../types/book';
+import { booksCollection } from '../lib/firestore/collections';
 
 export const addBook = async (book: Book) => {
     try { 

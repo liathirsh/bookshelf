@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+/scripts
+/tsconfig.script.json
+
 # next.js
 /.next/
 /out/

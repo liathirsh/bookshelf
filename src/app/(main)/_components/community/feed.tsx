@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { getAllBooks } from "@/services/bookService";
 import { Book } from "@/types/book";
-import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
 import Link from "next/link";
+import BookSkeleton from "../books/bookSkeleton";
 
 const placeholderImage = "/images/heropic.png";
 
@@ -30,7 +30,19 @@ const Feed = () => {
     }, []);
 
     if (isLoading) {
-        return <Spinner />;
+        return (
+            <div className="space-y-4">
+                <h2 className="text-2xl font-semibold mb-4">
+                    Discover New Books
+                </h2>
+                <p className="text-muted-foreground">Click on any book to read reviews and add your own!</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    {[...Array(5)].map((_, index) => (
+                        <BookSkeleton key={index} />
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -38,6 +50,7 @@ const Feed = () => {
             <h2 className="text-2xl font-semibold">
                 Discover New Books
             </h2>
+            <h3 className="text-lg font-semibold">Click on any book to read reviews and add your own!</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {randomBooks.map((book) => (
                     <Link href={`/books/${book.id}`} key={book.id} className="group">

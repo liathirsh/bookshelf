@@ -1,12 +1,15 @@
+import { InfiniteBackground } from "../../_components/background";
 import Recommendations from "../../_components/books/recommendations";
 import Image from 'next/image';
 
 const RecommendationsPage = () => {
     return (
-        <div className="flex-1 px-4 py-8 md:p-12">
-            <div className="max-w-7xl mx-auto">
-                <section className="flex flex-col">
-                    <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="relative min-h-screen flex flex-col">
+            <InfiniteBackground />
+            
+            <div className="py-4 px-6">
+                <section className="flex items-center gap-4 max-w-3xl mx-auto">
+                    <div className="bg-white rounded-lg shadow-md p-4">
                         <div className="flex items-center justify-center gap-4 mb-6">
                             <Image
                                 src="/images/robot.png"

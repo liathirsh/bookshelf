@@ -14,7 +14,6 @@ const FEATURED_BOOKS = ["Epic Fantasy", "Historical", "Romantic"];
 const BrowsePage = () => {
   const { data: allBooks, isLoading, error } = useAllBooks();
   const [genres, setGenres] = useState<{ genre: string; books: Book[] }[]>([]);
-
   const router = useRouter();
   const booksPerGenre = 5;
 
@@ -50,11 +49,12 @@ const BrowsePage = () => {
   }
 
   return (
-    <div className="flex-1 px-4 py-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-4">
-        <section className="flex flex-col">
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h1 className="text-2xl font-bold mb-4">Browse</h1>
+    <div className="flex-1 px-3 py-3 bg-gray-50">
+      <div className="max-w-5xl mx-auto space-y-5">
+
+        <section>
+          <div className="bg-white rounded-md shadow p-3">
+            <h1 className="text-xl font-bold mb-3">Browse</h1>
             <SearchForBook 
               placeholder="Search by title, author, or genre" 
               onBookSelected={handleBookSelected} 
@@ -63,40 +63,48 @@ const BrowsePage = () => {
         </section>
 
         {isLoading ? (
-          <Spinner />
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
         ) : error ? (
-          <p className="text-red-600">{error.toString()}</p>
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+            {error.toString()}
+          </div>
         ) : (
-          genres.map((genre) => (
-            <section key={genre.genre} className="flex flex-col">
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <h2 className="text-xl font-semibold mb-4">{genre.genre}</h2>
-                <div className="relative">
-                  <div className="flex overflow-x-auto gap-4 pb-2 -mx-2 px-2 snap-x">
+          <div className="space-y-5">
+            {genres.map((genre) => (
+              <section key={genre.genre}>
+                <div className="bg-white rounded-md shadow p-3">
+                  <h2 className="text-lg font-semibold mb-3">{genre.genre}</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                     {genre.books.map((book) => (
                       <div
                         key={book.id}
-                        className="flex-none w-[180px] cursor-pointer transition-transform hover:scale-105 snap-start"
+                        className="cursor-pointer"
                         onClick={() => handleBookSelected(book)}
                       >
-                        <div className="aspect-[2/3] relative rounded-lg overflow-hidden shadow-md mb-4">
+                        <div className="aspect-[2/3] relative rounded overflow-hidden bg-gray-100 mb-1">
                           <Image
                             src={book.imageUrl || placeholderImage}
                             alt={book.title}
                             fill
                             className="object-cover"
-                            sizes="180px"
+                            sizes="(max-width: 640px) 100vw, 150px"
                           />
                         </div>
-                        <h3 className="font-medium text-base line-clamp-1 mb-1">{book.title}</h3>
-                        <p className="text-gray-600 text-sm">{book.author}</p>
+                        <h3 className="font-medium text-sm line-clamp-1">
+                          {book.title}
+                        </h3>
+                        <p className="text-xs text-gray-600 line-clamp-1">
+                          {book.author}
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
-            </section>
-          ))
+              </section>
+            ))}
+          </div>
         )}
       </div>
     </div>

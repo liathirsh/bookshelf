@@ -54,9 +54,9 @@ export function useShelves() {
             bookId: string; 
             status: UserShelfEntry["status"]; 
         }) => addBookToUserShelf(userId, bookId, status),
-        onSuccess: (_, { userId, status }) => {
+        onSuccess: (_, { userId }) => {
             queryClient.invalidateQueries({ 
-                queryKey: ['shelves', userId, status]
+                queryKey: ['shelves', userId]
             });
         }
     });
