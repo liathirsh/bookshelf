@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/firebaseAdmin";
 
-
 export async function middleware(req: NextRequest) {
     const sessionCookie = req.cookies.get('sessionToken')?.value;
     
-    if (req.nextUrl.pathname.startsWith('/api/auth')) {
+    if (req.nextUrl.pathname.startsWith('/api/auth') || 
+        req.nextUrl.pathname.startsWith('/_next') ||
+        req.nextUrl.pathname === '/login' ||
+        req.nextUrl.pathname === '/sign-up') {
         return NextResponse.next();
     }
 
@@ -23,7 +25,6 @@ export async function middleware(req: NextRequest) {
             request: { headers: requestHeaders },
         });
     } catch (error) {
-        console.error('Session verification error:', error);
         const response = NextResponse.redirect(new URL('/login', req.url));
         response.cookies.delete('sessionToken');
         return response;

@@ -7,14 +7,16 @@ import { User } from 'firebase/auth';
 interface AuthContextProps {
     user: User | null;
     loading: boolean;
+    error?: string;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export function AuthProvider({ children} : { children: ReactNode}) {
-    const auth = useAuth();
+    const { user, loading, error } = useAuth();
+    
     return (
-        <AuthContext.Provider value={auth}>
+        <AuthContext.Provider value={{ user, loading, error }}>
             {children}
         </AuthContext.Provider>
     )

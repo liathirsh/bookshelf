@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, serverTimestamp } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
@@ -13,7 +13,10 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+// Initialize Firebase
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+// Initialize Firebase services
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -23,4 +26,4 @@ googleAuthProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
-export { auth, db, storage, googleAuthProvider, serverTimestamp };
+export { app, auth, db, storage, googleAuthProvider, serverTimestamp };
