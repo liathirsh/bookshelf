@@ -14,10 +14,9 @@ import { useBook, useUpdateBookRating } from '@/hooks/useBooks';
 import { ShelfButton } from '@/app/(main)/_components/books/shelfButton';
 import { Separator } from '@/components/ui/separator';
 import { ReviewModal } from '@/app/(main)/_components/books/ReviewModal';
-import { useQuery } from '@tanstack/react-query';
-import { getBookReviews } from '@/services/reviewService';
 import { ReviewCard } from '../../_components/books/ReviewCard';
 import { InfiniteBackground } from '../../_components/background';
+import { useBookReviews } from '@/hooks/useReviews';
 
 const fantasyLogo = "/images/romantasylogo.png"
 
@@ -27,10 +26,7 @@ export default function BookPage() {
     const bookId = params.id as string;
 
     const { data: book, isLoading: isBookLoading, error: bookError } = useBook(bookId);
-    const { data: reviews } = useQuery({
-        queryKey: ['reviews', bookId],
-        queryFn: () => getBookReviews(bookId)
-    });
+    const { data: reviews } = useBookReviews(bookId);
     const { mutate: updateRating } = useUpdateBookRating();
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 

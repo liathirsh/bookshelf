@@ -4,7 +4,9 @@ import { auth } from '@/lib/firebaseAdmin';
 export async function POST(req: NextRequest) {
     try {
         const { idToken } = await req.json();
+        
         if (!idToken) {
+            console.error('No ID token provided');
             return NextResponse.json({ 
                 success: false, 
                 error: 'ID token is required' 
@@ -13,65 +15,49 @@ export async function POST(req: NextRequest) {
 
         const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
 
-        // First verify the token
-        let decodedToken;
         try {
-            decodedToken = await auth.verifyIdToken(idToken);
-            if (Date.now() >= decodedToken.exp * 1000) {
-                return NextResponse.json({ 
-                    success: false,
-                    error: 'Token has expired'
-                }, { status: 401 });
+            const decodedToken = await auth.verifyIdToken(idToken);
+            
+            try {
+                const userRecord = await auth.getUserByEmail(decodedToken.email || '');
+                if (userRecord.uid !== decodedToken.uid) {
+                    return NextResponse.json({ 
+                        success: false,
+                        error: 'Email already in use'
+                    }, { status: 409 });
+                }
+            } catch (error) {
+                alert(`Email already in use, ${error}`);
             }
-        } catch (verifyError) {
-            console.error('Token verification failed:', verifyError);
+
+            const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+
+            const response = NextResponse.json({ 
+                success: true,
+                uid: decodedToken.uid
+            });
+            
+            response.cookies.set('sessionToken', sessionCookie, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: expiresIn / 1000,
+                path: '/',
+            });
+
+            return response;
+        } catch (error) {
+            console.error('Session creation error:', error);
             return NextResponse.json({ 
                 success: false,
-                error: 'Invalid token',
-                details: verifyError instanceof Error ? verifyError.message : 'Token verification failed'
+                error: 'Invalid token or session creation failed'
             }, { status: 401 });
         }
-
-        let sessionCookie;
-        try {
-            sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
-        } catch (cookieError) {
-            console.error('Session cookie creation failed:', cookieError);
-            return NextResponse.json({ 
-                success: false,
-                error: 'Failed to create session cookie',
-                details: cookieError instanceof Error ? cookieError.message : 'Cookie creation failed'
-            }, { status: 401 });
-        }
-
-        const response = NextResponse.json({ 
-            success: true,
-            user: {
-                uid: decodedToken.uid,
-                email: decodedToken.email,
-            }
-        });
-        
-        response.cookies.set('sessionToken', sessionCookie, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'lax',
-            maxAge: expiresIn / 1000,
-            path: '/',
-        });
-
-        return response;
     } catch (error) {
-        console.error('Set-session error:', {
-            name: error instanceof Error ? error.name : 'Unknown',
-            message: error instanceof Error ? error.message : 'Unknown error',
-            stack: error instanceof Error ? error.stack : undefined,
-        });
-
+        console.error('Set-session route error:', error);
         return NextResponse.json({ 
             success: false,
-            error: 'Failed to create session',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        }, { status: 401 });
+            error: 'Internal server error'
+        }, { status: 500 });
     }
 }

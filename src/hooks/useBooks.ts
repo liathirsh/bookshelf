@@ -1,3 +1,4 @@
+import { Review, CreateReviewData } from '@/types/review';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getBook, getAllBooks, updateBookRating } from '@/services/bookService';
 import { listReviewsForBook, createReview } from '@/services/reviewService';
@@ -65,6 +66,7 @@ export function useBookReviews(bookId: string) {
     return useQuery({
         queryKey: ['bookReviews', bookId],
         queryFn: () => listReviewsForBook(bookId),
+        staleTime: 0,
     });
 }
 
@@ -72,35 +74,43 @@ export function useCreateReview() {
     const queryClient = useQueryClient();
     
     return useMutation({
-        mutationFn: async ({ 
-            bookId, 
-            userId,
-            content, 
-            rating,
-            userName,
-            userPhotoURL 
-        }: { 
-            bookId: string;
-            userId: string;
-            content: string; 
-            rating: number;
-            userName: string;
-            userPhotoURL?: string;
-        }) => {
-            return createReview({
-                bookId,
-                userId,
-                userName,
-                userPhotoURL,
-                content,
-                rating,
-                likes: 0,
-                createdAt: new Date().toISOString()
+        mutationFn: async (review: CreateReviewData) => createReview(review),
+        onMutate: async (newReview) => {
+            await queryClient.cancelQueries({ 
+                queryKey: ['bookReviews', newReview.bookId] 
             });
+
+            const previousReviews = queryClient.getQueryData<Review[]>(
+                ['bookReviews', newReview.bookId]
+            );
+
+            const optimisticReview: Review = {
+                id: 'temp-id-' + new Date().getTime(),
+                ...newReview,
+                createdAt: new Date().toISOString(),
+                likes: 0
+            };
+
+            queryClient.setQueryData<Review[]>(
+                ['bookReviews', newReview.bookId],
+                (old = []) => [optimisticReview, ...old]
+            );
+
+            return { previousReviews };
         },
-        onSuccess: (_, { bookId }) => {
-            queryClient.invalidateQueries({ queryKey: ['bookReviews', bookId] });
-            queryClient.invalidateQueries({ queryKey: ['book', bookId] });
+        onError: (_, newReview, context) => {
+            queryClient.setQueryData(
+                ['bookReviews', newReview.bookId],
+                context?.previousReviews
+            );
+        },
+        onSettled: (_, __, newReview) => {
+            queryClient.invalidateQueries({ 
+                queryKey: ['bookReviews', newReview.bookId] 
+            });
+            queryClient.invalidateQueries({ 
+                queryKey: ['book', newReview.bookId] 
+            });
         },
     });
 } 

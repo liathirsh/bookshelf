@@ -13,22 +13,12 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Log config without sensitive data
-console.log('Firebase Client Config:', {
-    hasApiKey: !!firebaseConfig.apiKey,
-    authDomain: firebaseConfig.authDomain,
-    projectId: firebaseConfig.projectId,
-    environment: process.env.NODE_ENV
-});
-
-// Initialize Firebase only once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const googleAuthProvider = new GoogleAuthProvider();
 
-// Configure Google Auth Provider
 googleAuthProvider.setCustomParameters({
     prompt: 'select_account'
 });

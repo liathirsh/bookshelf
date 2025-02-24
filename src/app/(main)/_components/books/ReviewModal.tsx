@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import StarRating from './starRating';
-import { useCreateReview } from '@/hooks/useBooks';
+import { useCreateReview } from '@/hooks/useReviews';
 import { useAuth } from '@/hooks/useAuth';
 
 interface ReviewModalProps {
@@ -26,23 +26,22 @@ export function ReviewModal({ bookId, isOpen, onClose }: ReviewModalProps) {
     const handleSubmit = () => {
         if (!content || !rating || !user) return;
 
-        createReview(
-            { 
-                bookId, 
-                userId: user.uid,
-                userName: user.displayName ?? 'Anonymous',
-                userPhotoURL: user.photoURL || undefined,
-                content, 
-                rating
+        const review = {
+            bookId,
+            userId: user.uid,
+            userName: user.displayName ?? 'Anonymous',
+            userPhotoURL: user.photoURL || null,
+            content,
+            rating
+        };
+
+        createReview(review, {
+            onSuccess: () => {
+                setContent('');
+                setRating(0);
+                onClose()
             },
-            {
-                onSuccess: () => {
-                    setContent('');
-                    setRating(0);
-                    onClose();
-                },
-            }
-        );
+        });
     };
 
     return (

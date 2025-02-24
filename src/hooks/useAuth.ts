@@ -31,7 +31,6 @@ export function useAuth() {
                     });
 
                     const data = await response.json();
-                    console.log('Session response:', data);
 
                     if (!response.ok) {
                         throw new Error(data.error || 'Failed to set session');

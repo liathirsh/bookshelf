@@ -13,7 +13,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
             <div className="flex items-start gap-4">
                 <Avatar className="w-12 h-12">
                     <Image 
-                        src={review.userPhotoURL || '/default-avatar.png'} 
+                        src={review.userPhotoURL || '/images/robot.png'} 
                         alt={review.userName} 
                         width={48} 
                         height={48} 

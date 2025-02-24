@@ -1,12 +1,12 @@
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Review } from '@/types/review';
+import { Review, CreateReviewData } from '@/types/review';
 import { doc, runTransaction } from 'firebase/firestore';
 import { booksCollection } from '@/lib/firestore/collections';
 
 const reviewsCollection = collection(db, 'reviews');
 
-export const createReview = async (review: Omit<Review, 'id'>) => {
+export const createReview = async (review: CreateReviewData) => {
     try {
         const bookRef = doc(booksCollection, review.bookId);
         
@@ -15,6 +15,17 @@ export const createReview = async (review: Omit<Review, 'id'>) => {
             if (!bookDoc.exists()) {
                 throw new Error('Book not found');
             }
+
+            const reviewData = {
+                bookId: review.bookId,
+                userId: review.userId,
+                userName: review.userName,
+                userPhotoURL: review.userPhotoURL,
+                rating: review.rating,
+                content: review.content,
+                createdAt: new Date().toISOString(),
+                likes: 0
+            };
 
             const bookData = bookDoc.data();
             const ratings = bookData.ratings || {};
@@ -31,11 +42,11 @@ export const createReview = async (review: Omit<Review, 'id'>) => {
             });
 
             const reviewRef = doc(reviewsCollection);
-            transaction.set(reviewRef, review);
+            transaction.set(reviewRef, reviewData);
             
             return {
                 id: reviewRef.id,
-                ...review
+                ...reviewData
             };
         });
     } catch (error) {

@@ -25,23 +25,56 @@ export async function signUpAction(formData: FormData): Promise<SignUpResult> {
     }
 
     try {
+        const checkEmailResponse = await fetch('/api/auth/check-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+
+        if (!checkEmailResponse.ok) {
+            throw new Error('Failed to check email availability');
+        }
+
+        const emailCheck = await checkEmailResponse.json();
+        if (!emailCheck.available) {
+            return {
+                success: false,
+                generalError: "This email is already registered. Please try logging in instead."
+            };
+        }
+
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const { user } = userCredential;
 
         await updateProfile(user, { displayName });
 
+        const idToken = await user.getIdToken();
+
+        const sessionResponse = await fetch('/api/auth/set-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ idToken }),
+        });
+
+        if (!sessionResponse.ok) {
+            throw new Error('Failed to establish session');
+        }
+
         await setDoc(doc(db, "users", user.uid), {
             email,
             displayName,
             createdAt: new Date(),
-        })
+        });
 
         await initializeUserShelves(user.uid);
 
         return { success: true };
-    } catch (error ) {
-        console.error("Sign Up Error:", error)
-        
-        return { success: false, generalError: "Failed to create account. Please try again."}
+    } catch (error) {
+        console.error("Sign Up Error:", error);
+        return { 
+            success: false, 
+            generalError: error instanceof Error ? error.message : "Failed to create account. Please try again."
+        };
     }
 }

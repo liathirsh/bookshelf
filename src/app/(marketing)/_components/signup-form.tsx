@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/app/actions/sign-up-action";
@@ -16,6 +16,7 @@ const initialState: SignUpResult = {
 
 export function SignUpForm() {
     const router = useRouter();
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     const signUpActionHandler = async(prevState: SignUpResult, formData: FormData): Promise<SignUpResult> => {
         const result = await signUpAction(formData);
@@ -25,10 +26,13 @@ export function SignUpForm() {
     const [state, formAction] = useActionState(signUpActionHandler, initialState);
 
     useEffect(() => {
-        if (state.success) {
-            router.push("/dashboard");
+        if (state.success && !isRedirecting) {
+            setIsRedirecting(true);
+            setTimeout(() => {
+                router.push("/dashboard");
+            }, 1000);
         }
-    }, [state.success, router]);
+    }, [state.success, router, isRedirecting]);
 
     return (
        <form action={formAction} className="space-y-4">
