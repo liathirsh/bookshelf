@@ -42,14 +42,9 @@ export async function middleware(req: NextRequest) {
     }
 
     try {
-        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
-        const requestHeaders = new Headers(req.headers);
-        requestHeaders.set('X-User-ID', decodedToken.uid);
-
-        return NextResponse.next({
-            request: { headers: requestHeaders },
-        });
-    } catch (error) {
+        await auth.verifySessionCookie(sessionCookie);
+        return NextResponse.next();
+    } catch {
         const response = NextResponse.redirect(new URL('/login', req.url));
         response.cookies.delete('sessionToken');
         return response;

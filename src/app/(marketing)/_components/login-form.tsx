@@ -20,10 +20,10 @@ export function LogInForm() {
 
     useEffect(() => {
         if (state.success) {
-            router.refresh();
-            const timer = setTimeout(() => {
+            const timer = setTimeout(async () => {
+                await router.refresh();
                 router.replace("/dashboard");
-            }, 1000);
+            }, 1500); 
             return () => clearTimeout(timer);
         }
     }, [state.success, router]);

@@ -16,30 +16,18 @@ export async function POST(req: NextRequest) {
 
         try {
             const decodedToken = await auth.verifyIdToken(idToken);
-            
-            try {
-                const userRecord = await auth.getUserByEmail(decodedToken.email || '');
-                if (userRecord.uid !== decodedToken.uid) {
-                    return NextResponse.json({ 
-                        success: false,
-                        error: 'Email already in use'
-                    }, { status: 409 });
-                }
-            } catch (error) {
-                alert(`Email already in use, ${error}`);
-            }
+            console.log(decodedToken);
 
             const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
 
-            const response = NextResponse.json({ 
-                success: true,
-                uid: decodedToken.uid
+            const response = NextResponse.redirect(new URL('/dashboard', req.url), {
+                status: 303,
             });
             
             response.cookies.set('sessionToken', sessionCookie, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
+                sameSite: 'none',
                 maxAge: expiresIn / 1000,
                 path: '/',
             });
@@ -48,13 +36,15 @@ export async function POST(req: NextRequest) {
         } catch (error) {
             return NextResponse.json({ 
                 success: false,
-                error: console.error(error)
+                error: 'Authentication failed', 
+                errorMessage: error
             }, { status: 401 });
         }
     } catch (error) {
         return NextResponse.json({ 
             success: false,
-            error: console.error(error)
+            error: 'Internal server error',
+            errorMessage: error
         }, { status: 500 });
     }
 }

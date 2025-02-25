@@ -26,15 +26,21 @@ export const loginAction = async(_prevState: LoginResult, formData: FormData): P
         const userCredential = await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
         const idToken = await userCredential.user.getIdToken();
         
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-        const response = await fetch(`${baseUrl}/api/auth/set-session`, {
+        const origin = process.env.NODE_ENV === 'production'
+            ? 'https://bookshelf-neon-one.vercel.app'
+            : 'http://localhost:3000';
+
+        const response = await fetch(`${origin}/api/auth/set-session`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({ idToken }),
+            redirect: 'follow',
         });
+
+        if (response.redirected) {
+            return { success: true };
+        }
 
         const data = await response.json();
         
@@ -46,7 +52,8 @@ export const loginAction = async(_prevState: LoginResult, formData: FormData): P
         }
 
         return { success: true };
-    } catch {
+    } catch (error) {
+        console.error('LoginAction error:', error);
         return {
             success: false,
             generalError: "An unexpected error occurred. Please try again.",
