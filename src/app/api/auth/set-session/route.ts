@@ -17,17 +17,14 @@ export async function POST(req: NextRequest) {
         try {
             const decodedToken = await auth.verifyIdToken(idToken);
             console.log(decodedToken);
-
             const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
 
-            const response = NextResponse.redirect(new URL('/dashboard', req.url), {
-                status: 303,
-            });
+            const response = NextResponse.json({ success: true }, { status: 200 });
             
             response.cookies.set('sessionToken', sessionCookie, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'none',
+                sameSite: 'lax',
                 maxAge: expiresIn / 1000,
                 path: '/',
             });

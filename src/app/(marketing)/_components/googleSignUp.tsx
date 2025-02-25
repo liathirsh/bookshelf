@@ -31,6 +31,8 @@ export function GoogleSignUpButton() {
                 throw new Error(data.error || 'Failed to set session');
             }
 
+            await response.json();
+                        
             router.push("/dashboard");
         } catch (error) {
             toast({ 
