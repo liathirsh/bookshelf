@@ -1,10 +1,17 @@
-
+import { redirect } from "next/navigation";
 import Bookshelf from "../../_components/bookshelf/bookshelf";
 import { getAuthenticatedUser } from "@/lib/auth";
+
+export const dynamic = 'force-dynamic';
 
 const BookshelfRoute = async () => {
     
     const decodedToken = await getAuthenticatedUser();
+
+    if (!decodedToken) {
+        redirect("/login");
+        return null;
+    }
 
     return (
         <div className="min-h-full flex flex-col">

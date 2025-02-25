@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
         const { idToken } = await req.json();
         
         if (!idToken) {
-            console.error('No ID token provided');
             return NextResponse.json({ 
                 success: false, 
                 error: 'ID token is required' 
@@ -47,17 +46,15 @@ export async function POST(req: NextRequest) {
 
             return response;
         } catch (error) {
-            console.error('Session creation error:', error);
             return NextResponse.json({ 
                 success: false,
-                error: 'Invalid token or session creation failed'
+                error: console.error(error)
             }, { status: 401 });
         }
     } catch (error) {
-        console.error('Set-session route error:', error);
         return NextResponse.json({ 
             success: false,
-            error: 'Internal server error'
+            error: console.error(error)
         }, { status: 500 });
     }
 }

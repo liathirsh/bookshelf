@@ -24,20 +24,21 @@ export const loginAction = async(_prevState: LoginResult, formData: FormData): P
         }
 
         const userCredential = await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
-        
         const idToken = await userCredential.user.getIdToken();
         
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
         const response = await fetch(`${baseUrl}/api/auth/set-session`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 
+                'Content-Type': 'application/json'
+            },
             credentials: 'include',
             body: JSON.stringify({ idToken }),
         });
 
         const data = await response.json();
-
-        if (!response.ok) {
+        
+        if (!response.ok || !data.success) {
             return {
                 success: false,
                 generalError: data.error || "Failed to set session cookie. Please try again later.",
@@ -45,11 +46,10 @@ export const loginAction = async(_prevState: LoginResult, formData: FormData): P
         }
 
         return { success: true };
-    } catch (error) {
-        console.error('Login error:', error);
+    } catch {
         return {
             success: false,
-            generalError: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+            generalError: "An unexpected error occurred. Please try again.",
         };
     }
 }

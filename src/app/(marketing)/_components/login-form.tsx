@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { loginAction } from "@/app/actions/login-actions";
@@ -16,13 +16,17 @@ const initialState: LoginResult = {
 
 export function LogInForm() {
     const [state, formAction] = useActionState(loginAction, initialState);
-
     const router = useRouter();
 
-    
-    if (state.success) {
-        router.push("/dashboard");
-    }
+    useEffect(() => {
+        if (state.success) {
+            router.refresh();
+            const timer = setTimeout(() => {
+                router.replace("/dashboard");
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [state.success, router]);
 
     return (
         <form action={formAction} className="space-y-4">

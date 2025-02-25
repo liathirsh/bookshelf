@@ -24,8 +24,11 @@ export const Heading = () => {
             <p className="text-lg sm:text-xl text-white max-w-2xl mx-auto leading-relaxed
                          drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]
                          [text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]">
-                A place to find your next fantasy read and get AI Recommendations
-            </p>
+                A place to find your next <span className="font-bold text-orange-500">fantasy</span> read </p>
+            <p className="text-lg sm:text-xl text-white max-w-2xl mx-auto leading-relaxed
+                         drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]
+                         [text-shadow:_1px_1px_4px_rgb(0_0_0_/_80%)]"> Get <span className="font-bold text-orange-500">AI Recommendations </span> to help you find your next favorite book </p>
+            
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
                 {loading ? (
                     <Spinner /> 
