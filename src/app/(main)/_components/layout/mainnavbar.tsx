@@ -11,12 +11,18 @@ export const MainNavbar = () => {
 
     const handleLogout = async () => {
         try {
+            setIsMenuOpen(false);
             await logout();
             router.push("/")
         } catch(error) {
             console.log("Logout failed:", error)
         }
     };
+
+    const handleLinkClick = () => {
+        setIsMenuOpen(false);
+    };
+
     return (
         <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,24 +89,28 @@ export const MainNavbar = () => {
                         <div className="px-2 pt-2 pb-3 space-y-1">
                             <Link 
                                 href="/dashboard"
+                                onClick={handleLinkClick}
                                 className="block text-gray-600 hover:text-gray-900 px-3 py-2 text-base font-medium transition-colors"
                             >
                                 Home
                             </Link>
                             <Link 
                                 href="/books"
+                                onClick={handleLinkClick}
                                 className="block text-gray-600 hover:text-gray-900 px-3 py-2 text-base font-medium transition-colors"
                             >
                                 My Books
                             </Link>
                             <Link 
                                 href="/browse"
+                                onClick={handleLinkClick}
                                 className="block text-gray-600 hover:text-gray-900 px-3 py-2 text-base font-medium transition-colors"
                             >
                                 Browse
                             </Link>
                             <Link 
                                 href="/recommendations"
+                                onClick={handleLinkClick}
                                 className="block text-gray-600 hover:text-gray-900 px-3 py-2 text-base font-medium transition-colors"
                             >
                                 AI Recommendor
