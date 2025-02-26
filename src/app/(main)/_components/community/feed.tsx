@@ -31,12 +31,12 @@ const Feed = () => {
 
     if (isLoading) {
         return (
-            <div className="space-y-4">
-                <h2 className="text-2xl font-semibold mb-4">
+            <div className="space-y-4 px-4 sm:px-0">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">
                     Discover New Books
                 </h2>
-                <p className="text-muted-foreground">Click on any book to read reviews and add your own!</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <p className="text-base sm:text-lg text-muted-foreground">Click on any book to read reviews and add your own!</p>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                     {[...Array(5)].map((_, index) => (
                         <BookSkeleton key={index} />
                     ))}
