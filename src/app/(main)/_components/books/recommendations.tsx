@@ -22,6 +22,8 @@ interface ParsedBook {
 }
 
 const parseRecommendations = (content: string): ParsedBook[] => {
+    if (!content) return [];
+    
     const books: ParsedBook[] = [];
     const lines = content.split('\n');
     
@@ -114,9 +116,10 @@ const Recommendations = () => {
         if (message.role === 'assistant') {
             const books = parseRecommendations(message.content);
             if (books.length > 0) {
+                const firstLine = message.content.split('\n')[0] || '';
                 return (
                     <div className="space-y-4">
-                        <p className="mb-4">{message.content.split('\n')[0]}</p>
+                        <p className="mb-4">{firstLine}</p>
                         {books.map((book, index) => (
                             <div 
                                 key={index} 
@@ -144,13 +147,14 @@ const Recommendations = () => {
                 );
             }
         }
+        
         return (
             <div className={`p-4 rounded-2xl max-w-[85%] ${
                 message.role === 'user' 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-gray-100 text-gray-800'
             }`}>
-                {message.content}
+                {message.content || ''}
             </div>
         );
     };

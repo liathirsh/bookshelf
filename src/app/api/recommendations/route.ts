@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, Part } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -27,24 +27,26 @@ Core rules:
 - Keep descriptions to one line
 - No asterisks or special formatting
 - Maximum 3-4 recommendations
-- Only recommend fantasy books - no science fiction, horror, or other genres
-- If user goes off-topic, politely redirect to fantasy books and fantasy-related discussions only`;
+- Only recommend fantasy books
+- If user goes off-topic, politely redirect to fantasy books`;
 
 export async function POST(req: NextRequest) {
     try {
         const { message } = await req.json();
         
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ 
+            model: "models/gemini-2.0-flash-lite",
+        });
         
         const chat = model.startChat({
             history: [
                 {
                     role: "user",
-                    parts: [{ text: PROMPT_CONTEXT }] as Part[],
+                    parts: [{ text: PROMPT_CONTEXT }],
                 },
                 {
                     role: "model",
-                    parts: [{ text: "I understand. I'll focus exclusively on books and reading, providing recommendations and redirecting off-topic conversations back to books." }] as Part[],
+                    parts: [{ text: "I understand and will follow these guidelines for recommending fantasy books." }],
                 },
             ],
             generationConfig: {
@@ -52,7 +54,7 @@ export async function POST(req: NextRequest) {
                 topK: 40,
                 topP: 0.95,
                 maxOutputTokens: 1000,
-            },
+            }
         });
 
         const result = await chat.sendMessage(message);
