@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { ForgotPasswordDialog } from "./forgotPasswordDialog";
-
+import { Spinner } from "@/components/ui/spinner";
 export function LogInForm() {
   const [state, setState] = useState({
     success: false,
@@ -103,7 +103,7 @@ export function LogInForm() {
       </div>
 
       <Button type="submit" variant="secondary" className="w-full" disabled={state.success}>
-        {state.success ? "Logged In!" : "Log In"}
+          {state.success ? <Spinner /> : "Log In"}
       </Button>
     </form>
   );
